@@ -1,0 +1,247 @@
+<!-- templates/tailortrack/dashboard.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TailorTrack - Order Management</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'tailortrack/css/style.css' %}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TailorTrack</div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search customers or orders...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <button class="add-order-btn" onclick="openNewOrderModal()">+ New Order</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul>
+                <li><a href="{% url 'tailortrack:dashboard' %}" class="tab-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">Dashboard</a></li>
+                <li><a href="{% url 'tailortrack:orders_list' %}" class="tab-link {% if request.resolver_match.url_name == 'orders_list' %}active{% endif %}">All Orders</a></li>
+                <li><a href="{% url 'tailortrack:customers_list' %}" class="tab-link {% if request.resolver_match.url_name == 'customers_list' %}active{% endif %}">Customers</a></li>
+                <li><a href="{% url 'tailortrack:payments_list' %}" class="tab-link {% if request.resolver_match.url_name == 'payments_list' %}active{% endif %}">Payments</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            <!-- Dashboard Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number">{{ total_orders }}</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ active_orders }}</div>
+                    <div class="stat-label">Active Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">{{ overdue_orders }}</div>
+                    <div class="stat-label">Overdue Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">₹{{ total_revenue|floatformat:0 }}</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
+
+            <h2 style="margin-bottom: 20px;">Recent Orders</h2>
+            <div class="orders-grid">
+                {% for order in recent_orders %}
+                <div class="order-card {% if order.is_overdue %}overdue{% endif %}" onclick="location.href='{% url 'tailortrack:order_detail' order.id %}'">
+                    <div class="order-header">
+                        <div class="customer-name">{{ order.customer.name }}</div>
+                        <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value">{{ order.order_date|date:"d M Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Due Date:</span>
+                            <span class="detail-value {% if order.is_overdue %}balance-amount{% endif %}">{{ order.due_date|date:"d M Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">{{ order.customer.phone_number }}</span>
+                        </div>
+                    </div>
+                    <div class="payment-info">
+                        <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span class="detail-value">₹{{ order.total_cost|floatformat:0 }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Paid:</span>
+                            <span class="detail-value paid-amount">₹{{ order.amount_paid|floatformat:0 }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Balance:</span>
+                            <span class="detail-value balance-amount">₹{{ order.balance|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No orders yet</h3>
+                    <p>Create your first order to get started!</p>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <!-- New Order Modal -->
+    <div id="newOrderModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">New Order</h2>
+                <span class="close" onclick="closeNewOrderModal()">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form method="post" action="{% url 'tailortrack:create_order' %}" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label>Customer Name *</label>
+                        <input type="text" name="customer_name" required>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phone Number *</label>
+                            <input type="tel" name="phone_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp Number</label>
+                            <input type="tel" name="whatsapp_number">
+                        </div>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Measurements</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Bust/Chest (inches)</label>
+                            <input type="number" name="bust" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Waist (inches)</label>
+                            <input type="number" name="waist" step="0.5">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Hips (inches)</label>
+                            <input type="number" name="hips" step="0.5">
+                        </div>
+                        <div class="form-group">
+                            <label>Length (inches)</label>
+                            <input type="number" name="length" step="0.5">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Measurements/Notes</label>
+                        <textarea name="measurement_notes" rows="3" placeholder="e.g., shoulder width, sleeve length, special fitting notes..."></textarea>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Order Details</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Due Date *</label>
+                            <input type="date" name="due_date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Order Status</label>
+                            <select name="status">
+                                <option value="pending">Pending</option>
+                                <option value="progress">In Progress</option>
+                                <option value="completed">Completed</option>
+                                <option value="delivered">Delivered</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Design Upload</label>
+                        <div class="file-upload" onclick="document.getElementById('designUpload').click()">
+                            <div>📷 Click to upload design images</div>
+                            <div style="font-size: 0.8rem; color: #666; margin-top: 5px;">Supports JPG, PNG, PDF</div>
+                            <input type="file" id="designUpload" name="design_images" multiple accept="image/*,.pdf">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Design Notes</label>
+                        <textarea name="design_notes" rows="3" placeholder="e.g., client wants lace added, specific color preferences..."></textarea>
+                    </div>
+
+                    <h3 style="margin: 25px 0 15px 0; color: #667eea;">Payment Information</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Total Cost (₹) *</label>
+                            <input type="number" name="total_cost" required min="0">
+                        </div>
+                        <div class="form-group">
+                            <label>Amount Paid (₹)</label>
+                            <input type="number" name="amount_paid" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-buttons">
+                        <button type="button" class="btn btn-secondary" onclick="closeNewOrderModal()">Cancel</button>
+                        <button type="submit" class="btn btn-primary">Create Order</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="{% static 'tailortrack/js/script.js' %}"></script>
+    <script>
+        // Django-specific JavaScript
+        function openNewOrderModal() {
+            document.getElementById('newOrderModal').style.display = 'block';
+            // Set minimum date to today
+            const today = new Date().toISOString().split('T')[0];
+            document.querySelector('input[name="due_date"]').min = today;
+        }
+
+        function closeNewOrderModal() {
+            document.getElementById('newOrderModal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('newOrderModal');
+            if (event.target === modal) {
+                closeNewOrderModal();
+            }
+        }
+
+        // Real-time search functionality
+        document.getElementById('searchInput').addEventListener('input', function() {
+            const searchTerm = this.value;
+            if (searchTerm.length > 2) {
+                // Implement live search or redirect to search results
+                window.location.href = `{% url 'tailortrack:orders_list' %}?search=${searchTerm}`;
+            }
+        });
+    </script>
+</body>
+</html>
