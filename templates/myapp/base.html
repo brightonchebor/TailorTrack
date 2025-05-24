@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <link href="{% static '/assets/style.css' %}" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">TailorTrack</div>
+                <div class="search-bar">
+                    <input type="text" id="searchInput" placeholder="Search customers or orders...">
+                    <span class="search-icon">🔍</span>
+                </div>
+                <button class="add-order-btn" onclick="openNewOrderModal()">+ New Order</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Navigation Tabs -->
+    <nav class="nav-tabs">
+        <div class="container">
+            <ul>
+                <li><a href="#" onclick="switchTab('dashboard')" class="tab-link active">Dashboard</a></li>
+                <li><a href="#" onclick="switchTab('orders')" class="tab-link">All Orders</a></li>
+                <li><a href="#" onclick="switchTab('customers')" class="tab-link">Customers</a></li>
+                <li><a href="#" onclick="switchTab('payments')" class="tab-link">Payments</a></li>
+            </ul>
+        </div>
+    </nav>
+    {% block content %}
+    
+    {% endblock content %}
+    <script src="{% static '/assets/main.js' %}"></script>
+</body>
+</html>
