@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('myapp.urls')),  # Replace 'your_app' with your actual app name
+    path('', include('myapp.urls')),  
 ]
 
 # Serve media files during development
