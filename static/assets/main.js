@@ -34,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
     .getElementById("sortFilter")
     .addEventListener("change", applyFilters);
 
-  document.querySelector('.add-order-btn').addEventListener('click', openNewOrderModal);  
+   
 });
 
 // Sample data for demonstration
@@ -550,9 +550,9 @@ Measurements:
 Design Notes: ${order.designNotes}
 
 Payment:
-- Total Cost: ₹${order.totalCost.toLocaleString()}
-- Amount Paid: ₹${order.amountPaid.toLocaleString()}
-- Balance: ₹${order.balance.toLocaleString()}`);
+- Total Cost: KES${order.totalCost.toLocaleString()}
+- Amount Paid: KES${order.amountPaid.toLocaleString()}
+- Balance: KES${order.balance.toLocaleString()}`);
 }
 
 // Record payment
@@ -561,7 +561,7 @@ function recordPayment(orderId) {
   if (!order) return;
 
   const payment = prompt(`Record payment for ${order.customerName}
-Outstanding balance: ₹${order.balance.toLocaleString()}
+Outstanding balance: KES${order.balance.toLocaleString()}
 
 Enter payment amount:`);
 
@@ -585,7 +585,7 @@ Enter payment amount:`);
     updateDashboard();
     displayPayments();
     alert(
-      `Payment of ₹${paymentAmount.toLocaleString()} recorded successfully!`
+      `Payment of KES${paymentAmount.toLocaleString()} recorded successfully!`
     );
   }
 }
