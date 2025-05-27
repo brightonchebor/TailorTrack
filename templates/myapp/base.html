@@ -24,6 +24,7 @@
           <button class="add-order-btn" onclick="openNewOrderModal()">
             + New Order
           </button>
+          
         </div>
       </div>
     </header>
@@ -33,22 +34,22 @@
       <div class="container">
         <ul>
           <li>
-            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            <a href="{% url "dashboard" %}"   class="tab-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}"
               >Dashboard</a
             >
           </li>
           <li>
-            <a href="{% url "index" %}"  class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            <a href="{% url "order_list" %}"  class="tab-link {% if request.resolver_match.url_name == 'order_list' %}active{% endif %}"
               >All Orders</a
             >
           </li>
           <li>
-            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            <a href="{% url "customer_list" %}"   class="tab-link {% if request.resolver_match.url_name == 'customer_list' %}active{% endif %}"
               >Customers</a
             >
           </li>
           <li>
-            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
+            <a href="{% url "payment_list" %}"   class="tab-link {% if request.resolver_match.url_name == 'payment_list' %}active{% endif %}"
               >Payments</a
             >
           </li>
@@ -56,11 +57,17 @@
       </div>
     </nav>
 
-    {% block content %} {% endblock content %}
-
-    {% include "./create_order.html" %}
+    
+    {% block content %}
+    
+    {% endblock content %}
+  
+    
+        {% include "./create_order.html" %}
     
 
     <script src="{% static '/assets/main.js' %}"></script>
+    
   </body>
 </html>
+

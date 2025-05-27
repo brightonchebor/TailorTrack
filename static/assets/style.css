@@ -475,3 +475,9 @@ body {
     color: #ddd;
     margin-bottom: 20px;
 }
+
+.nav-tabs .tab-link.active {
+    border-bottom: 3px solid #667eea !important;
+    background: #f8f9ff;
+    color: #667eea;
+}
