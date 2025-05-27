@@ -5,4 +5,4 @@ def index(request):
 
     context = {}
 
-    return render(request, 'myapp/dashboard.html', context)
+    return render(request, 'myapp/order_list.html', context)
