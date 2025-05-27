@@ -33,22 +33,22 @@
       <div class="container">
         <ul>
           <li>
-            <a href="#" onclick="switchTab('dashboard')" class="tab-link active"
+            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
               >Dashboard</a
             >
           </li>
           <li>
-            <a href="#" onclick="switchTab('orders')" class="tab-link"
+            <a href="{% url "index" %}"  class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
               >All Orders</a
             >
           </li>
           <li>
-            <a href="#" onclick="switchTab('customers')" class="tab-link"
+            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
               >Customers</a
             >
           </li>
           <li>
-            <a href="#" onclick="switchTab('payments')" class="tab-link"
+            <a href="{% url "index" %}"   class="tab-link {% if request.resolver_match.url_name == 'index' %}active{% endif %}"
               >Payments</a
             >
           </li>
