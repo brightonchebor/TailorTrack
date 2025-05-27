@@ -1,6 +1,6 @@
 {% extends "./base.html" %}
 {% block title %}
-    Dashboard
+Dashboard
 {% endblock title %}
 
 {% block content %}
@@ -28,12 +28,48 @@
             </div>
 
             <h2 style="margin-bottom: 20px;">Recent Orders</h2>
-            <div class="orders-grid" id="recentOrdersGrid">
-                <!-- Recent orders will be populated here -->
+            <div class="orders-grid" >
+                
+                <div class="order-card" onclick="viewOrderDetails(1)">
+                    <div class="order-header">
+                        <div class="customer-name">Jane Wanjiku</div>
+                        <div class="order-status status-pending">Pending</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value">2025-05-20</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Due Date:</span>
+                            <span class="detail-value">2025-05-30</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">+254 712 345 678</span>
+                        </div>
+                    </div>
+                    <div class="payment-info">
+                        <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span class="detail-value">KES 15,000</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Paid:</span>
+                            <span class="detail-value paid-amount">KES 5,000</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Balance:</span>
+                            <span class="detail-value balance-amount">KES 10,000</span>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
+
+            
     </div>
-</main>        
+    </div>
+</main>
 {% endblock content %}
 
 {% block modals %}
