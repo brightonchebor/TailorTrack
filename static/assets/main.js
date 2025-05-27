@@ -33,6 +33,8 @@ document.addEventListener("DOMContentLoaded", function () {
   document
     .getElementById("sortFilter")
     .addEventListener("change", applyFilters);
+
+  document.querySelector('.add-order-btn').addEventListener('click', openNewOrderModal);  
 });
 
 // Sample data for demonstration
@@ -179,7 +181,7 @@ function updateDashboard() {
   document.getElementById("overdueOrders").textContent = overdueOrders;
   document.getElementById(
     "totalRevenue"
-  ).textContent = `₹${totalRevenue.toLocaleString()}`;
+  ).textContent = `KES${totalRevenue.toLocaleString()}`;
 
   // Display recent orders
   const recentOrders = orders.slice(-5).reverse();
