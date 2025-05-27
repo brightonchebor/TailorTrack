@@ -1,134 +1,558 @@
-{% load static %}
-<link href="{% static '/assets/style.css' %}" rel="stylesheet" />
-<!-- Create Order Modal -->
-<div id="createOrderModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <form id="createOrderForm">
-      <h2>New Order</h2>
-      <div class="form-group">
-        <label for="customerName">Customer Name *</label>
-        <input type="text" id="customerName" required />
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="phoneNumber">Phone Number *</label>
-          <input type="tel" id="phoneNumber" required />
-        </div>
-        <div class="form-group">
-          <label for="whatsappNumber">WhatsApp Number</label>
-          <input type="tel" id="whatsappNumber" />
-        </div>
-      </div>
-
-      <h3>Measurements</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="bustChest">Bust/Chest (inches)</label>
-          <input type="number" id="bustChest" step="0.1" />
-        </div>
-        <div class="form-group">
-          <label for="waist">Waist (inches)</label>
-          <input type="number" id="waist" step="0.1" />
-        </div>
-      </div>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="hips">Hips (inches)</label>
-          <input type="number" id="hips" step="0.1" />
-        </div>
-        <div class="form-group">
-          <label for="length">Length (inches)</label>
-          <input type="number" id="length" step="0.1" />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="additionalMeasurements"
-          >Additional Measurements/Notes</label
-        >
-        <textarea id="additionalMeasurements"></textarea>
-      </div>
-
-      <h3>Order Details</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="dueDate">Due Date *</label>
-          <input type="date" id="dueDate" required />
-        </div>
-        <div class="form-group">
-          <label for="orderStatus">Order Status</label>
-          <select id="orderStatus">
-            <option>Pending</option>
-            <option>In Progress</option>
-            <option>Completed</option>
-            <option>Delivered</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label for="designUpload">Design Upload</label>
-        <div class="upload-area">
-          <p>📷 Click to upload design images</p>
-          <p>Supports JPG, PNG, PDF</p>
-          <input
-            type="file"
-            id="designUpload"
-            multiple
-            accept=".jpg,.png,.pdf"
-          />
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="designNotes">Design Notes</label>
-        <textarea id="designNotes"></textarea>
-      </div>
-
-      <h3>Payment Information</h3>
-      <div class="form-row">
-        <div class="form-group">
-          <label for="totalCost">Total Cost (KES) *</label>
-          <input type="number" id="totalCost" required step="0.01" />
-        </div>
-        <div class="form-group">
-          <label for="amountPaid">Amount Paid (KES)</label>
-          <input type="number" id="amountPaid" step="0.01" />
-        </div>
-      </div>
-
-      <div class="form-actions">
-        <button type="button" class="cancel-btn">Cancel</button>
-        <button type="submit" class="create-btn">Create Order</button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    const modal = document.getElementById("createOrderModal");
-    const openBtn = document.querySelector(".add-order-btn");
-    const closeBtn = modal.querySelector(".close");
-    const cancelBtn = modal.querySelector(".cancel-btn");
-
-    // Open modal
-    openBtn.addEventListener("click", function () {
-      modal.style.display = "block";
-    });
-
-    // Close modal on "×" or cancel button
-    closeBtn.addEventListener("click", function () {
-      modal.style.display = "none";
-    });
-    cancelBtn.addEventListener("click", function () {
-      modal.style.display = "none";
-    });
-
-    // Close modal on outside click
-    window.addEventListener("click", function (event) {
-      if (event.target === modal) {
-        modal.style.display = "none";
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Order Management</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    });
-  });
-</script>
+
+      body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+        line-height: 1.6;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      /* Header */
+      .header {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 1rem 0;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .header-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+      }
+
+      .search-bar {
+        flex: 1;
+        max-width: 400px;
+        margin: 0 20px;
+        position: relative;
+      }
+
+      .search-bar input {
+        width: 100%;
+        padding: 10px 40px 10px 15px;
+        border: none;
+        border-radius: 25px;
+        font-size: 14px;
+        outline: none;
+      }
+
+      .search-icon {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+      }
+
+      .add-order-btn {
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 25px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+
+      .add-order-btn:hover {
+        background: #45a049;
+      }
+
+      /* Navigation Tabs */
+      .nav-tabs {
+        background: white;
+        padding: 0;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        margin-bottom: 20px;
+      }
+
+      .nav-tabs ul {
+        list-style: none;
+        display: flex;
+        overflow-x: auto;
+      }
+
+      .nav-tabs li {
+        flex: 1;
+        min-width: 120px;
+      }
+
+      .nav-tabs a {
+        display: block;
+        padding: 15px 20px;
+        text-decoration: none;
+        color: #666;
+        text-align: center;
+        border-bottom: 3px solid transparent;
+        transition: all 0.3s;
+      }
+
+      .nav-tabs a.active {
+        color: #667eea;
+        border-bottom-color: #667eea;
+        background: #f8f9ff;
+      }
+
+      /* Main Content */
+      .main-content {
+        padding: 20px 0;
+      }
+
+      .tab-content {
+        display: none;
+      }
+
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Stats Cards */
+      .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+
+      .stat-number {
+        font-size: 2rem;
+        font-weight: bold;
+        color: #667eea;
+      }
+
+      .stat-label {
+        color: #666;
+        margin-top: 5px;
+      }
+
+      /* Orders Grid */
+      .orders-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 20px;
+      }
+
+      .order-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .order-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .order-card.overdue {
+        border-left: 4px solid #f44336;
+      }
+
+      .order-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      }
+
+      .customer-name {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: #333;
+      }
+
+      .order-status {
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: bold;
+        text-transform: uppercase;
+      }
+
+      .status-pending {
+        background: #fff3cd;
+        color: #856404;
+      }
+
+      .status-progress {
+        background: #d1ecf1;
+        color: #0c5460;
+      }
+
+      .status-completed {
+        background: #d4edda;
+        color: #155724;
+      }
+
+      .status-delivered {
+        background: #e2e3e5;
+        color: #383d41;
+      }
+
+      .order-details {
+        margin: 15px 0;
+      }
+
+      .detail-row {
+        display: flex;
+        justify-content: space-between;
+        margin: 8px 0;
+        font-size: 0.9rem;
+      }
+
+      .detail-label {
+        color: #666;
+      }
+
+      .detail-value {
+        font-weight: 500;
+      }
+
+      .payment-info {
+        background: #f8f9fa;
+        padding: 10px;
+        border-radius: 5px;
+        margin: 10px 0;
+      }
+
+      .balance-amount {
+        color: #f44336;
+        font-weight: bold;
+      }
+
+      .paid-amount {
+        color: #4CAF50;
+        font-weight: bold;
+      }
+
+      /* Forms */
+      .form-container {
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #333;
+      }
+
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: border-color 0.3s;
+      }
+
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 2px rgba(102, 126, 234, 0.2);
+      }
+
+      .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+      }
+
+      .upload-area {
+        border: 2px dashed #ddd;
+        border-radius: 5px;
+        padding: 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: border-color 0.3s;
+      }
+
+      .upload-area:hover {
+        border-color: #667eea;
+      }
+
+      .upload-area input {
+        display: none;
+      }
+
+      .form-actions {
+        display: flex;
+        gap: 10px;
+        justify-content: flex-end;
+        margin-top: 30px;
+      }
+
+      .create-btn, .cancel-btn {
+        padding: 12px 24px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.3s;
+      }
+
+      .create-btn {
+        background: #667eea;
+        color: white;
+      }
+
+      .create-btn:hover {
+        background: #5a6fd8;
+      }
+
+      .cancel-btn {
+        background: #6c757d;
+        color: white;
+      }
+
+      .cancel-btn:hover {
+        background: #5a6268;
+      }
+
+      /* Modal */
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+      }
+
+      .modal-content {
+        background-color: white;
+        margin: 5% auto;
+        padding: 30px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .close {
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        color: #999;
+        float: right;
+        margin-bottom: 20px;
+      }
+
+      .close:hover {
+        color: #333;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .header-content {
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        .search-bar {
+          margin: 0;
+          max-width: none;
+          width: 100%;
+        }
+
+        .form-row {
+          grid-template-columns: 1fr;
+        }
+
+        .modal-content {
+          margin: 10% auto;
+          width: 95%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Create Order Modal -->
+    <div id="createOrderModal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <form id="createOrderForm">
+          <h2>New Order</h2>
+          <div class="form-group">
+            <label for="customerName">Customer Name *</label>
+            <input type="text" id="customerName" required />
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="phoneNumber">Phone Number *</label>
+              <input type="tel" id="phoneNumber" required />
+            </div>
+            <div class="form-group">
+              <label for="whatsappNumber">WhatsApp Number</label>
+              <input type="tel" id="whatsappNumber" />
+            </div>
+          </div>
+
+          <h3>Measurements</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="bustChest">Bust/Chest (inches)</label>
+              <input type="number" id="bustChest" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label for="waist">Waist (inches)</label>
+              <input type="number" id="waist" step="0.1" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="hips">Hips (inches)</label>
+              <input type="number" id="hips" step="0.1" />
+            </div>
+            <div class="form-group">
+              <label for="length">Length (inches)</label>
+              <input type="number" id="length" step="0.1" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="additionalMeasurements">Additional Measurements/Notes</label>
+            <textarea id="additionalMeasurements"></textarea>
+          </div>
+
+          <h3>Order Details</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="dueDate">Due Date *</label>
+              <input type="date" id="dueDate" required />
+            </div>
+            <div class="form-group">
+              <label for="orderStatus">Order Status</label>
+              <select id="orderStatus">
+                <option>Pending</option>
+                <option>In Progress</option>
+                <option>Completed</option>
+                <option>Delivered</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="designUpload">Design Upload</label>
+            <div class="upload-area">
+              <p>📷 Click to upload design images</p>
+              <p>Supports JPG, PNG, PDF</p>
+              <input type="file" id="designUpload" multiple accept=".jpg,.png,.pdf" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="designNotes">Design Notes</label>
+            <textarea id="designNotes"></textarea>
+          </div>
+
+          <h3>Payment Information</h3>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="totalCost">Total Cost (KES) *</label>
+              <input type="number" id="totalCost" required step="0.01" />
+            </div>
+            <div class="form-group">
+              <label for="amountPaid">Amount Paid (KES)</label>
+              <input type="number" id="amountPaid" step="0.01" />
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" class="cancel-btn">Cancel</button>
+            <button type="submit" class="create-btn">Create Order</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Add Order Button to trigger modal -->
+    <button class="add-order-btn" style="margin: 20px;">Add New Order</button>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const modal = document.getElementById("createOrderModal");
+        const openBtn = document.querySelector(".add-order-btn");
+        const closeBtn = modal.querySelector(".close");
+        const cancelBtn = modal.querySelector(".cancel-btn");
+
+        // Open modal
+        openBtn.addEventListener("click", function () {
+          modal.style.display = "block";
+        });
+
+        // Close modal on "×" or cancel button
+        closeBtn.addEventListener("click", function () {
+          modal.style.display = "none";
+        });
+        cancelBtn.addEventListener("click", function () {
+          modal.style.display = "none";
+        });
+
+        // Close modal on outside click
+        window.addEventListener("click", function (event) {
+          if (event.target === modal) {
+            modal.style.display = "none";
+          }
+        });
+
+        // Make upload area clickable
+        const uploadArea = document.querySelector('.upload-area');
+        const fileInput = document.getElementById('designUpload');
+        
+        uploadArea.addEventListener('click', function() {
+          fileInput.click();
+        });
+      });
+    </script>
+  </body>
+</html>
