@@ -40,9 +40,9 @@ function loadSampleData() {
   const sampleOrders = [
     {
       id: 1,
-      customerName: "Priya Sharma",
-      phoneNumber: "+91 9876543210",
-      whatsappNumber: "+91 9876543210",
+      customerName: "Kevin Oduor",
+      phoneNumber: "+254787654321",
+      whatsappNumber: "+254787654321",
       orderDate: "2024-11-01",
       dueDate: "2024-11-15",
       status: "progress",
@@ -60,9 +60,9 @@ function loadSampleData() {
     },
     {
       id: 2,
-      customerName: "Anjali Patel",
-      phoneNumber: "+91 9123456789",
-      whatsappNumber: "+91 9123456789",
+      customerName: "Nyaboke Patel",
+      phoneNumber: "+25473456789",
+      whatsappNumber: "25473456789",
       orderDate: "2024-11-05",
       dueDate: "2024-11-10",
       status: "completed",
@@ -80,9 +80,9 @@ function loadSampleData() {
     },
     {
       id: 3,
-      customerName: "Meera Gupta",
-      phoneNumber: "+91 9998887776",
-      whatsappNumber: "+91 9998887776",
+      customerName: "Maureen Gupta",
+      phoneNumber: "+24578887776",
+      whatsappNumber: "+24578887776",
       orderDate: "2024-10-28",
       dueDate: "2024-11-08",
       status: "pending",
@@ -243,15 +243,15 @@ function displayOrdersInGrid(gridId, ordersToDisplay) {
                         <div class="payment-info">
                             <div class="detail-row">
                                 <span class="detail-label">Total:</span>
-                                <span class="detail-value">₹${order.totalCost.toLocaleString()}</span>
+                                <span class="detail-value">KES${order.totalCost.toLocaleString()}</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Paid:</span>
-                                <span class="detail-value paid-amount">₹${order.amountPaid.toLocaleString()}</span>
+                                <span class="detail-value paid-amount">KES${order.amountPaid.toLocaleString()}</span>
                             </div>
                             <div class="detail-row">
                                 <span class="detail-label">Balance:</span>
-                                <span class="detail-value balance-amount">₹${order.balance.toLocaleString()}</span>
+                                <span class="detail-value balance-amount">KES${order.balance.toLocaleString()}</span>
                             </div>
                         </div>
                     </div>
@@ -311,7 +311,7 @@ function displayCustomers() {
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Total Spent:</span>
-                            <span class="detail-value paid-amount">₹${customer.totalSpent.toLocaleString()}</span>
+                            <span class="detail-value paid-amount">KES${customer.totalSpent.toLocaleString()}</span>
                         </div>
                     </div>
                 </div>
@@ -361,15 +361,15 @@ function displayPayments() {
                     <div class="payment-info">
                         <div class="detail-row">
                             <span class="detail-label">Total Cost:</span>
-                            <span class="detail-value">₹${order.totalCost.toLocaleString()}</span>
+                            <span class="detail-value">KES${order.totalCost.toLocaleString()}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Paid:</span>
-                            <span class="detail-value paid-amount">₹${order.amountPaid.toLocaleString()}</span>
+                            <span class="detail-value paid-amount">KES${order.amountPaid.toLocaleString()}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Outstanding:</span>
-                            <span class="detail-value balance-amount">₹${order.balance.toLocaleString()}</span>
+                            <span class="detail-value balance-amount">KES${order.balance.toLocaleString()}</span>
                         </div>
                     </div>
                     <div style="margin-top: 15px;">

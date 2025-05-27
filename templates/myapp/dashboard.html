@@ -1,8 +1,37 @@
 {% extends "./base.html" %}
 {% block title %}
-
+    Dashboard
 {% endblock title %}
 
 {% block content %}
+<main class="main-content">
+    <div class="container">
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-label">Total Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="activeOrders">0</div>
+                    <div class="stat-label">Active Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overdueOrders">0</div>
+                    <div class="stat-label">Overdue Orders</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalRevenue">KES0</div>
+                    <div class="stat-label">Total Revenue</div>
+                </div>
+            </div>
 
+            <h2 style="margin-bottom: 20px;">Recent Orders</h2>
+            <div class="orders-grid" id="recentOrdersGrid">
+                <!-- Recent orders will be populated here -->
+            </div>
+        </div>
+    </div>
+</main>        
 {% endblock content %}
