@@ -1,91 +1,134 @@
-
-<form id="createOrderForm">
-    <h2>New Order</h2>
-    <div class="form-group">
+{% load static %}
+<link href="{% static '/assets/style.css' %}" rel="stylesheet" />
+<!-- Create Order Modal -->
+<div id="createOrderModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <form id="createOrderForm">
+      <h2>New Order</h2>
+      <div class="form-group">
         <label for="customerName">Customer Name *</label>
-        <input type="text" id="customerName" required>
-    </div>
-    <div class="form-row">
+        <input type="text" id="customerName" required />
+      </div>
+      <div class="form-row">
         <div class="form-group">
-            <label for="phoneNumber">Phone Number *</label>
-            <input type="tel" id="phoneNumber" required>
+          <label for="phoneNumber">Phone Number *</label>
+          <input type="tel" id="phoneNumber" required />
         </div>
         <div class="form-group">
-            <label for="whatsappNumber">WhatsApp Number</label>
-            <input type="tel" id="whatsappNumber">
+          <label for="whatsappNumber">WhatsApp Number</label>
+          <input type="tel" id="whatsappNumber" />
         </div>
-    </div>
+      </div>
 
-    <h3>Measurements</h3>
-    <div class="form-row">
+      <h3>Measurements</h3>
+      <div class="form-row">
         <div class="form-group">
-            <label for="bustChest">Bust/Chest (inches)</label>
-            <input type="number" id="bustChest" step="0.1">
+          <label for="bustChest">Bust/Chest (inches)</label>
+          <input type="number" id="bustChest" step="0.1" />
         </div>
         <div class="form-group">
-            <label for="waist">Waist (inches)</label>
-            <input type="number" id="waist" step="0.1">
+          <label for="waist">Waist (inches)</label>
+          <input type="number" id="waist" step="0.1" />
         </div>
-    </div>
-    <div class="form-row">
+      </div>
+      <div class="form-row">
         <div class="form-group">
-            <label for="hips">Hips (inches)</label>
-            <input type="number" id="hips" step="0.1">
+          <label for="hips">Hips (inches)</label>
+          <input type="number" id="hips" step="0.1" />
         </div>
         <div class="form-group">
-            <label for="length">Length (inches)</label>
-            <input type="number" id="length" step="0.1">
+          <label for="length">Length (inches)</label>
+          <input type="number" id="length" step="0.1" />
         </div>
-    </div>
-    <div class="form-group">
-        <label for="additionalMeasurements">Additional Measurements/Notes</label>
+      </div>
+      <div class="form-group">
+        <label for="additionalMeasurements"
+          >Additional Measurements/Notes</label
+        >
         <textarea id="additionalMeasurements"></textarea>
-    </div>
+      </div>
 
-    <h3>Order Details</h3>
-    <div class="form-row">
+      <h3>Order Details</h3>
+      <div class="form-row">
         <div class="form-group">
-            <label for="dueDate">Due Date *</label>
-            <input type="date" id="dueDate" required>
+          <label for="dueDate">Due Date *</label>
+          <input type="date" id="dueDate" required />
         </div>
         <div class="form-group">
-            <label for="orderStatus">Order Status</label>
-            <select id="orderStatus">
-                <option>Pending</option>
-                <option>In Progress</option>
-                <option>Completed</option>
-                <option>Delivered</option>
-            </select>
+          <label for="orderStatus">Order Status</label>
+          <select id="orderStatus">
+            <option>Pending</option>
+            <option>In Progress</option>
+            <option>Completed</option>
+            <option>Delivered</option>
+          </select>
         </div>
-    </div>
+      </div>
 
-    <div class="form-group">
+      <div class="form-group">
         <label for="designUpload">Design Upload</label>
         <div class="upload-area">
-            <p>📷 Click to upload design images</p>
-            <p>Supports JPG, PNG, PDF</p>
-            <input type="file" id="designUpload" multiple accept=".jpg,.png,.pdf">
+          <p>📷 Click to upload design images</p>
+          <p>Supports JPG, PNG, PDF</p>
+          <input
+            type="file"
+            id="designUpload"
+            multiple
+            accept=".jpg,.png,.pdf"
+          />
         </div>
-    </div>
-    <div class="form-group">
+      </div>
+      <div class="form-group">
         <label for="designNotes">Design Notes</label>
         <textarea id="designNotes"></textarea>
-    </div>
+      </div>
 
-    <h3>Payment Information</h3>
-    <div class="form-row">
+      <h3>Payment Information</h3>
+      <div class="form-row">
         <div class="form-group">
-            <label for="totalCost">Total Cost (KES) *</label>
-            <input type="number" id="totalCost" required step="0.01">
+          <label for="totalCost">Total Cost (KES) *</label>
+          <input type="number" id="totalCost" required step="0.01" />
         </div>
         <div class="form-group">
-            <label for="amountPaid">Amount Paid (KES)</label>
-            <input type="number" id="amountPaid" step="0.01">
+          <label for="amountPaid">Amount Paid (KES)</label>
+          <input type="number" id="amountPaid" step="0.01" />
         </div>
-    </div>
+      </div>
 
-    <div class="form-actions">
+      <div class="form-actions">
         <button type="button" class="cancel-btn">Cancel</button>
         <button type="submit" class="create-btn">Create Order</button>
-    </div>
-</form>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const modal = document.getElementById("createOrderModal");
+    const openBtn = document.querySelector(".add-order-btn");
+    const closeBtn = modal.querySelector(".close");
+    const cancelBtn = modal.querySelector(".cancel-btn");
+
+    // Open modal
+    openBtn.addEventListener("click", function () {
+      modal.style.display = "block";
+    });
+
+    // Close modal on "×" or cancel button
+    closeBtn.addEventListener("click", function () {
+      modal.style.display = "none";
+    });
+    cancelBtn.addEventListener("click", function () {
+      modal.style.display = "none";
+    });
+
+    // Close modal on outside click
+    window.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        modal.style.display = "none";
+      }
+    });
+  });
+</script>
