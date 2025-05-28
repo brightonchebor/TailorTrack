@@ -8,28 +8,30 @@
     <link href="{% static '/assets/style.css' %}" rel="stylesheet" />
   </head>
   <body>
-    <!-- Header -->
-    <header class="header">
-      <div class="container">
-        <div class="header-content">
-          <div class="logo">TailorTrack</div>
-          <div class="search-bar">
-            <input
-              type="text"
-              id="searchInput"
-              placeholder="Search customers or orders..."
-            />
-            <span class="search-icon">🔍</span>
-          </div>
-          <div class="actions">
-            <button class="add-order-btn" onclick="openNewOrderModal()">
-              + New Order
-            </button> 
-            {% include './icon.html' %}
-          </div>
+      <!-- Header -->
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="logo">
+          <a href="{% url "dashboard" %}" style="text-decoration: none; color: inherit;">TailorTrack</a>
+        </div>
+        <div class="search-bar">
+          <input
+            type="text"
+            id="searchInput"
+            placeholder="Search customers or orders..."
+          />
+          <span class="search-icon">🔍</span>
+        </div>
+        <div class="actions">
+          <button class="add-order-btn" onclick="openNewOrderModal()">
+            + New Order
+          </button> 
+          {% include './icon.html' %}
         </div>
       </div>
-    </header>
+    </div>
+  </header>
     <br/><br/>
     <div class="container" style="max-width: 400px; margin: 0 auto;">
       <div class="row justify-content-center">
