@@ -422,7 +422,7 @@
     <div id="createOrderModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <form method="post">
+        <form method="post" action="{% url 'create_order'  %}" enctype="multipart/form-data">
           {% csrf_token %}
           <h2>New Order</h2>
           <div class="form-group">
