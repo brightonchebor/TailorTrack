@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from myapp.models import *
+from .models import *
 from django.db.models import Q, Sum
 
 # Create your views here.
