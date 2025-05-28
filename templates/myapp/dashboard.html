@@ -10,64 +10,67 @@ Dashboard
         <div id="dashboard" class="tab-content active">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" id="totalOrders">0</div>
+                    <div class="stat-number" >{{ total_orders }}</div>
                     <div class="stat-label">Total Orders</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="activeOrders">0</div>
+                    <div class="stat-number" >{{ active_orders }}</div>
                     <div class="stat-label">Active Orders</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="overdueOrders">0</div>
+                    <div class="stat-number" >{{ overdue_orders }}</div>
                     <div class="stat-label">Overdue Orders</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" id="totalRevenue">KES0</div>
+                    <div class="stat-number" >KES {{ total_revenue|floatformat:0|default:"0" }}</div>
                     <div class="stat-label">Total Revenue</div>
                 </div>
             </div>
 
             <h2 style="margin-bottom: 20px;">Recent Orders</h2>
-            <div class="orders-grid" >
-                
-                <div class="order-card" onclick="viewOrderDetails(1)">
+            <div class="orders-grid">
+                {% for order in recent_orders %}
+                <div class="order-card" onclick="viewOrderDetails({{ order.id }})">
                     <div class="order-header">
-                        <div class="customer-name">Jane Wanjiku</div>
-                        <div class="order-status status-pending">Pending</div>
+                        <div class="customer-name">{{ order.customer.name }}</div>
+                        <div class="order-status status-{{ order.status }}">{{ order.get_status_display|capfirst }}</div>
                     </div>
                     <div class="order-details">
                         <div class="detail-row">
                             <span class="detail-label">Order Date:</span>
-                            <span class="detail-value">2025-05-20</span>
+                            <span class="detail-value">{{ order.created_at|date:"Y-m-d" }}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Due Date:</span>
-                            <span class="detail-value">2025-05-30</span>
+                            <span class="detail-value">{{ order.due_date|date:"Y-m-d" }}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Phone:</span>
-                            <span class="detail-value">+254 712 345 678</span>
+                            <span class="detail-value">{{ order.customer.phone }}</span>
                         </div>
                     </div>
                     <div class="payment-info">
                         <div class="detail-row">
                             <span class="detail-label">Total:</span>
-                            <span class="detail-value">KES 15,000</span>
+                            <span class="detail-value">KES {{ order.total_amount|floatformat:0 }}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Paid:</span>
-                            <span class="detail-value paid-amount">KES 5,000</span>
+                            <span class="detail-value paid-amount">KES {{ order.amount_paid|floatformat:0|default:"0" }}</span>
                         </div>
                         <div class="detail-row">
                             <span class="detail-label">Balance:</span>
-                            <span class="detail-value balance-amount">KES 10,000</span>
+                            <span class="detail-value balance-amount">KES {{ order.balance|floatformat:0 }}</span>
                         </div>
                     </div>
                 </div>
+                {% empty %}
+                <div class="no-orders">
+                    <p>No recent orders found.</p>
+                </div>
+                {% endfor %}
             </div>
-
-            
-    </div>
+        </div>
     </div>
 </main>
 {% endblock content %}

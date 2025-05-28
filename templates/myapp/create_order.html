@@ -422,20 +422,21 @@
     <div id="createOrderModal" class="modal">
       <div class="modal-content">
         <span class="close">&times;</span>
-        <form id="createOrderForm">
+        <form method="post">
+          {% csrf_token %}
           <h2>New Order</h2>
           <div class="form-group">
             <label for="customerName">Customer Name *</label>
-            <input type="text" id="customerName" required />
+            <input type="text" id="customer_name" name="customer_name" required />
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="phoneNumber">Phone Number *</label>
-              <input type="tel" id="phoneNumber" required />
+              <input type="tel" id="phone_number" name="phone_number" required />
             </div>
             <div class="form-group">
               <label for="whatsappNumber">WhatsApp Number</label>
-              <input type="tel" id="whatsappNumber" />
+              <input type="tel" id="whatsapp_number" name="whatsapp_number" />
             </div>
           </div>
 
@@ -443,72 +444,72 @@
           <div class="form-row">
             <div class="form-group">
               <label for="bustChest">Bust/Chest (inches)</label>
-              <input type="number" id="bustChest" step="0.1" />
+              <input type="number" id="bust" name="bust" step="0.1" />
             </div>
             <div class="form-group">
               <label for="waist">Waist (inches)</label>
-              <input type="number" id="waist" step="0.1" />
+              <input type="number" id="waist" name="waist" step="0.1" />
             </div>
           </div>
           <div class="form-row">
             <div class="form-group">
               <label for="hips">Hips (inches)</label>
-              <input type="number" id="hips" step="0.1" />
+              <input type="number" id="hips" name="hips" step="0.1" />
             </div>
             <div class="form-group">
               <label for="length">Length (inches)</label>
-              <input type="number" id="length" step="0.1" />
+              <input type="number" id="length" name="length" step="0.1" />
             </div>
           </div>
           <div class="form-group">
-            <label for="additionalMeasurements">Additional Measurements/Notes</label>
-            <textarea id="additionalMeasurements"></textarea>
+            <label for="measurement_notes">Additional Measurements/Notes</label>
+            <textarea id="measurement_notes" name="measurement_notes"></textarea>
           </div>
 
           <h3>Order Details</h3>
           <div class="form-row">
             <div class="form-group">
-              <label for="dueDate">Due Date *</label>
-              <input type="date" id="dueDate" required />
+              <label for="due_date">Due Date *</label>
+              <input type="date" id="due_date" name="due_date" required />
             </div>
             <div class="form-group">
-              <label for="orderStatus">Order Status</label>
-              <select id="orderStatus">
-                <option>Pending</option>
-                <option>In Progress</option>
-                <option>Completed</option>
-                <option>Delivered</option>
+              <label for="status">Order Status</label>
+              <select id="status" name="status">
+                <option value="pending" {% if request.POST.status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="progress" {% if request.POST.status == 'progress' %}selected{% endif %}>In Progress</option>
+                <option value="completed" {% if request.POST.status == 'completed' %}selected{% endif %}>Completed</option>
+                <option value="delivered" {% if request.POST.status == 'delivered' %}selected{% endif %}>Delivered</option>
               </select>
             </div>
           </div>
 
           <div class="form-group">
-            <label for="designUpload">Design Upload</label>
-            <div class="upload-area">
+            <label for="design_images">Design Upload</label>
+            <div class="upload-area" onclick="document.getElementById('design_images').click()">
               <p>📷 Click to upload design images</p>
               <p>Supports JPG, PNG, PDF</p>
-              <input type="file" id="designUpload" multiple accept=".jpg,.png,.pdf" />
+              <input type="file" id="design_images" name="design_images" multiple accept=".jpg,.png,.pdf" />
             </div>
           </div>
           <div class="form-group">
-            <label for="designNotes">Design Notes</label>
-            <textarea id="designNotes"></textarea>
+            <label for="design_notes">Design Notes</label>
+            <textarea id="design_notes" name="design_notes"></textarea>
           </div>
 
           <h3>Payment Information</h3>
           <div class="form-row">
             <div class="form-group">
-              <label for="totalCost">Total Cost (KES) *</label>
-              <input type="number" id="totalCost" required step="0.01" />
+              <label for="total_cost">Total Cost (KES) *</label>
+              <input type="number" id="total_cost" name="total_cost" required step="0.01" />
             </div>
             <div class="form-group">
-              <label for="amountPaid">Amount Paid (KES)</label>
-              <input type="number" id="amountPaid" step="0.01" />
+              <label for="amount_paid">Amount Paid (KES)</label>
+              <input type="number" id="amount_paid" name="amount_paid" step="0.01" />
             </div>
           </div>
 
           <div class="form-actions">
-            <button type="button" class="cancel-btn">Cancel</button>
+            <a href="{% url 'dashboard' %}" class="cancel-btn" style="text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
             <button type="submit" class="create-btn">Create Order</button>
           </div>
         </form>
