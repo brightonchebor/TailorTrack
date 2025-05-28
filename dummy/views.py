@@ -160,3 +160,12 @@ def payment_list(request):
     }
 
     return render(request, 'myapp/payment_list.html', context)
+
+
+def login(request):
+
+    return render(request, 'myapp/login.html')
+
+def register(request):
+
+    return render(request, 'myapp/register.html')

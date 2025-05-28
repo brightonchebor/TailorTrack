@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{% block title %} {% endblock title %}</title>
+    {% load static %}
+    <link href="{% static '/assets/style.css' %}" rel="stylesheet" />
+  </head>
+  <body>
+    <!-- Header -->
+    <header class="header">
+      <div class="container">
+        <div class="header-content">
+          <div class="logo">TailorTrack</div>
+          <div class="search-bar">
+            <input
+              type="text"
+              id="searchInput"
+              placeholder="Search customers or orders..."
+            />
+            <span class="search-icon">🔍</span>
+          </div>
+          <div class="actions">
+            <button class="add-order-btn" onclick="openNewOrderModal()">
+              + New Order
+            </button> 
+            {% include './icon.html' %}
+          </div>
+        </div>
+      </div>
+    </header>
+
+    
+    
+
+    <script src="{% static '/assets/main.js' %}"></script>
+    
+  </body>
+</html>
+
