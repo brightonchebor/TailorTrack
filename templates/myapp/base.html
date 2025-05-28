@@ -21,10 +21,12 @@
             />
             <span class="search-icon">🔍</span>
           </div>
-          <button class="add-order-btn" onclick="openNewOrderModal()">
-            + New Order
-          </button>
-          
+          <div class="actions">
+            <button class="add-order-btn" onclick="openNewOrderModal()">
+              + New Order
+            </button> 
+            {% include './icon.html' %}
+          </div>
         </div>
       </div>
     </header>

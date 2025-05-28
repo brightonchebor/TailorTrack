@@ -29,18 +29,18 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .logo {
     font-size: 1.8rem;
     font-weight: bold;
+    flex-shrink: 0;
 }
 
 .search-bar {
     flex: 1;
     max-width: 400px;
-    margin: 0 20px;
     position: relative;
 }
 
@@ -61,6 +61,13 @@ body {
     color: #666;
 }
 
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    flex-shrink: 0;
+}
+
 .add-order-btn {
     background: #4CAF50;
     color: white;
@@ -70,12 +77,12 @@ body {
     cursor: pointer;
     font-weight: bold;
     transition: background 0.3s;
+    white-space: nowrap;
 }
 
 .add-order-btn:hover {
     background: #45a049;
 }
-
 /* Navigation Tabs */
 .nav-tabs {
     background: white;
@@ -423,6 +430,8 @@ body {
     .header-content {
         flex-direction: column;
         gap: 15px;
+        display: flex;
+        align-items: center;
     }
 
     .search-bar {
@@ -480,4 +489,100 @@ body {
     border-bottom: 3px solid #667eea !important;
     background: #f8f9ff;
     color: #667eea;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 3rem;     /* adjust as you like */
+    margin-left: auto;
+    
+  }
+
+/* Mobile hamburger menu for very small screens */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+.mobile-actions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 999;
+}
+
+.mobile-actions.show {
+    display: flex;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-content {
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+    
+    .search-bar {
+        order: 3;
+        flex-basis: 100%;
+        margin-top: 1rem;
+        max-width: none;
+    }
+    
+    .actions {
+        gap: 0.5rem;
+    }
+    
+    .add-order-btn {
+        padding: 8px 16px;
+        font-size: 0.9rem;
+    }
+    
+    .logo {
+        font-size: 1.5rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        position: relative;
+    }
+    
+    .header-content {
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .actions {
+        display: none;
+    }
+    
+    .mobile-menu-toggle {
+        display: block;
+    }
+    
+    .search-bar {
+        order: unset;
+        flex-basis: auto;
+        margin: 0;
+        max-width: 200px;
+    }
+    
+    .search-bar input {
+        padding: 8px 35px 8px 12px;
+        font-size: 13px;
+    }
 }

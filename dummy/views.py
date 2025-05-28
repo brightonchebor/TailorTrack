@@ -69,7 +69,7 @@ def create_order(request):
         messages.success(request, 'Order created successfully!')
         return redirect('dashboard')
 
-    return render(request, 'myapp/create_order.html', context)
+    return render(request, 'myapp/create_order.html')
 
 def customer_list(request):
 
