@@ -44,7 +44,9 @@ Payment List Page
         </button>
       </div>
     </div>
-
+    {% for order in orders_with_balance %}
+      order.customer
+    {% endfor %}
   </div>
 </div>
 {% endblock content %}

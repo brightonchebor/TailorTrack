@@ -7,42 +7,7 @@
     
     
     
-    <!-- Filters -->
-    <div class="filters">
-        <form method="GET" class="filters-row">
-            <!-- Preserve search query in filters -->
-            {% if search_query %}
-                <input type="hidden" name="search" value="{{ search_query }}">
-            {% endif %}
-            
-            <div class="form-group">
-                <label>Status</label>
-                <select name="status" id="statusFilter">
-                    <option value="">All Status</option>
-                    {% for value, label in status_choices %}
-                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
-                            {{ label }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>Sort By</label>
-                <select name="sort" id="sortFilter">
-                    <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Newest First</option>
-                    <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Oldest First</option>
-                    <option value="due_date" {% if sort_by == 'due_date' %}selected{% endif %}>Due Date</option>
-                    <option value="customer" {% if sort_by == 'customer' %}selected{% endif %}>Customer Name</option>
-                </select>
-            </div>
-            
-            <div class="form-group">
-                <label>&nbsp;</label>
-                <button type="submit" class="btn btn-primary">Apply Filters</button>
-            </div>
-        </form>
-    </div>
+    
 
     <!-- Search Results Info -->
     {% if search_query %}
@@ -53,63 +18,107 @@
     {% endif %}
 
     <!-- Orders Grid -->
-    <div class="orders-grid">
-        {% if page_obj %}
-            {% for order in page_obj %}
-                <div class="order-card {% if order.is_overdue %}overdue{% endif %}" onclick="viewOrderDetails({{ order.id }})">
-                    <div class="order-header">
-                        <div class="customer-name">{{ order.customer.name }}</div>
-                        <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
-                    </div>
-                    
-                    <div class="order-details">
-                        <div class="detail-row">
-                            <span class="detail-label">Order Date:</span>
-                            <span class="detail-value">{{ order.created_at|date:"d-M-Y" }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Due Date:</span>
-                            <span class="detail-value {% if order.is_overdue %}balance-amount{% endif %}">
-                                {{ order.due_date|date:"d-M-Y" }}
-                            </span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Phone:</span>
-                            <span class="detail-value">{{ order.customer.phone_number }}</span>
-                        </div>
-                    </div>
-                    
-                    <div class="payment-info">
-                        <div class="detail-row">
-                            <span class="detail-label">Total:</span>
-                            <span class="detail-value">KES {{ order.total_amount|floatformat:0 }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Paid:</span>
-                            <span class="detail-value paid-amount">KES {{ order.paid_amount|floatformat:0 }}</span>
-                        </div>
-                        <div class="detail-row">
-                            <span class="detail-label">Balance:</span>
-                            <span class="detail-value balance-amount">KES {{ order.balance_amount|floatformat:0 }}</span>
-                        </div>
-                    </div>
+     {% if orders %}
+        <!-- Filters -->
+        <div class="filters">
+            <form method="GET" class="filters-row">
+                <!-- Preserve search query in filters -->
+                {% if search_query %}
+                    <input type="hidden" name="search" value="{{ search_query }}">
+                {% endif %}
+                
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" id="statusFilter">
+                        <option value="">All Status</option>
+                        {% for value, label in status_choices %}
+                            <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                                {{ label }}
+                            </option>
+                        {% endfor %}
+                    </select>
                 </div>
-            {% empty %}
-                <div class="no-orders" style="text-align: center; padding: 40px; color: #666;">
-                    {% if search_query or status_filter %}
-                        <h3>No orders found matching your criteria</h3>
-                        <p>Try adjusting your search or filters</p>
-                        <a href="{% url 'order_list' %}" class="btn btn-primary">View All Orders</a>
-                    {% else %}
-                        <h3>No orders yet</h3>
-                        <p>Start by creating your first order</p>
-                        <a href="{% url 'order_create' %}" class="btn btn-primary">Create Order</a>
-                    {% endif %}
+                
+                <div class="form-group">
+                    <label>Sort By</label>
+                    <select name="sort" id="sortFilter">
+                        <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Newest First</option>
+                        <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Oldest First</option>
+                        <option value="due_date" {% if sort_by == 'due_date' %}selected{% endif %}>Due Date</option>
+                        <option value="customer" {% if sort_by == 'customer' %}selected{% endif %}>Customer Name</option>
+                    </select>
                 </div>
-            {% endfor %}
-        {% endif %}
-    </div>
-    
+                
+                <div class="form-group">
+                    <label>&nbsp;</label>
+                    <button type="submit" class="btn btn-primary">Apply Filters</button>
+                </div>
+            </form>
+        </div>
+        <div class="orders-grid">
+            {% if page_obj %}
+                {% for order in page_obj %}
+                    <div class="order-card {% if order.is_overdue %}overdue{% endif %}" onclick="viewOrderDetails({{ order.id }})">
+                        <div class="order-header">
+                            <div class="customer-name">{{ order.customer.name }}</div>
+                            <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
+                        </div>
+                        
+                        <div class="order-details">
+                            <div class="detail-row">
+                                <span class="detail-label">Order Date:</span>
+                                <span class="detail-value">{{ order.created_at|date:"d-M-Y" }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Due Date:</span>
+                                <span class="detail-value {% if order.is_overdue %}balance-amount{% endif %}">
+                                    {{ order.due_date|date:"d-M-Y" }}
+                                </span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Phone:</span>
+                                <span class="detail-value">{{ order.customer.phone_number }}</span>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-info">
+                            <div class="detail-row">
+                                <span class="detail-label">Total:</span>
+                                <span class="detail-value">KES {{ order.total_cost|floatformat:0 }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Paid:</span>
+                                <span class="detail-value paid-amount">KES {{ order.amount_paid|floatformat:0 }}</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Balance:</span>
+                                <span class="detail-value balance-amount">KES {{ order.balance|floatformat:0 }}</span>
+                            </div>
+                        </div>
+                    </div>
+                {% empty %}
+                    <div class="no-orders" style="text-align: center; padding: 40px; color: #666;">
+                        {% if search_query or status_filter %}
+                            <h3>No orders found matching your criteria</h3>
+                            <p>Try adjusting your search or filters</p>
+                            <a href="{% url 'order_list' %}" class="btn btn-primary">View All Orders</a>
+                        {% else %}
+                            <h3>No orders yet</h3>
+                            <p>Start by creating your first order</p>
+                            <a href="{% url 'order_create' %}" class="btn btn-primary">Create Order</a>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    {% else %}
+        <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+            <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📑</div>
+                <h3>No orders yet</h3>
+                <p>Orders will appear here once you create them.</p>
+                <br/>
+        </div>
+    {% endif %}
     <!-- Pagination -->
     {% if page_obj.has_other_pages %}
         <div class="pagination-container" style="margin-top: 30px; text-align: center;">
