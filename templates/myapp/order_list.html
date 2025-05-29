@@ -5,13 +5,7 @@
 <div id="orders" class="tab-content active">
     <h2 style="margin-bottom: 20px;">All Orders</h2>
     
-    <!-- Search Results Info -->
-    {% if search_query %}
-        <div class="search-results-info" style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
-            <span>Search results for: <strong>"{{ search_query }}"</strong></span>
-            <a href="{% url 'order_list' %}" class="btn btn-secondary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Clear Search</a>
-        </div>
-    {% endif %}
+    
     
     <!-- Filters -->
     <div class="filters">
@@ -49,6 +43,14 @@
             </div>
         </form>
     </div>
+
+    <!-- Search Results Info -->
+    {% if search_query %}
+        <div class="search-results-info" style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+            <span>Search results for: <strong>"{{ search_query }}"</strong></span>
+            <a href="{% url 'order_list' %}" class="btn btn-secondary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Clear Search</a>
+        </div>
+    {% endif %}
 
     <!-- Orders Grid -->
     <div class="orders-grid">
