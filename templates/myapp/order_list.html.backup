@@ -1,0 +1,147 @@
+{% extends "./base.html" %} 
+{% block title %} Order List Page {% endblock title%} 
+{% block content %}
+<!-- All Orders Tab -->
+<div id="orders" class="tab-content active">
+    <h2 style="margin-bottom: 20px;">All Orders</h2>
+    <div class="filters">
+      <div class="filters-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="statusFilter">
+            <option value="">All Status</option>
+            <option value="pending">Pending</option>
+            <option value="progress">In Progress</option>
+            <option value="completed">Completed</option>
+            <option value="delivered">Delivered</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Sort By</label>
+          <select id="sortFilter">
+            <option value="date_desc">Newest First</option>
+            <option value="date_asc">Oldest First</option>
+            <option value="due_date">Due Date</option>
+            <option value="customer">Customer Name</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>&nbsp;</label>
+          <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+        </div>
+      </div>
+    </div>
+
+  {% comment %} <div class="orders-grid" id="allOrdersGrid"> {% endcomment %}
+  <div class="orders-grid" >
+    <!-- All orders will be populated here -->
+     <!-- Order 1 -->
+    <div class="order-card overdue" onclick="viewOrderDetails(1)">
+        <div class="order-header">
+          <div class="customer-name">Kevin Oduor</div>
+          <div class="order-status status-progress">progress</div>
+        </div>
+        <div class="order-details">
+          <div class="detail-row">
+            <span class="detail-label">Order Date:</span>
+            <span class="detail-value">01-Nov-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Due Date:</span>
+            <span class="detail-value balance-amount">15-Nov-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">+254787654321</span>
+          </div>
+        </div>
+        <div class="payment-info">
+          <div class="detail-row">
+            <span class="detail-label">Total:</span>
+            <span class="detail-value">KES 2,500</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Paid:</span>
+            <span class="detail-value paid-amount">KES 1,000</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Balance:</span>
+            <span class="detail-value balance-amount">KES 1,500</span>
+          </div>
+        </div>
+      </div>
+      <!-- Order 2 -->
+      <div class="order-card" onclick="viewOrderDetails(2)">
+        <div class="order-header">
+          <div class="customer-name">Nyaboke Patel</div>
+          <div class="order-status status-completed">completed</div>
+        </div>
+        <div class="order-details">
+          <div class="detail-row">
+            <span class="detail-label">Order Date:</span>
+            <span class="detail-value">05-Nov-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Due Date:</span>
+            <span class="detail-value">10-Nov-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">+25473456789</span>
+          </div>
+        </div>
+        <div class="payment-info">
+          <div class="detail-row">
+            <span class="detail-label">Total:</span>
+            <span class="detail-value">KES 1,800</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Paid:</span>
+            <span class="detail-value paid-amount">KES 1,800</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Balance:</span>
+            <span class="detail-value balance-amount">KES 0</span>
+          </div>
+        </div>
+      </div>
+      <!-- Order 3 -->
+      <div class="order-card overdue" onclick="viewOrderDetails(3)">
+        <div class="order-header">
+          <div class="customer-name">Maureen Gupta</div>
+          <div class="order-status status-pending">pending</div>
+        </div>
+        <div class="order-details">
+          <div class="detail-row">
+            <span class="detail-label">Order Date:</span>
+            <span class="detail-value">28-Oct-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Due Date:</span>
+            <span class="detail-value balance-amount">08-Nov-2024</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Phone:</span>
+            <span class="detail-value">+24578887776</span>
+          </div>
+        </div>
+        <div class="payment-info">
+          <div class="detail-row">
+            <span class="detail-label">Total:</span>
+            <span class="detail-value">KES 15,000</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Paid:</span>
+            <span class="detail-value paid-amount">KES 5,000</span>
+          </div>
+          <div class="detail-row">
+            <span class="detail-label">Balance:</span>
+            <span class="detail-value balance-amount">KES 10,000</span>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+{% endblock content %} {% block modals %}
+<!-- Empty block - no modal here -->
+{% endblock modals %}

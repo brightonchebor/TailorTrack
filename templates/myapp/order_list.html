@@ -4,144 +4,143 @@
 <!-- All Orders Tab -->
 <div id="orders" class="tab-content active">
     <h2 style="margin-bottom: 20px;">All Orders</h2>
+    
+    <!-- Search Results Info -->
+    {% if search_query %}
+        <div class="search-results-info" style="margin-bottom: 20px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+            <span>Search results for: <strong>"{{ search_query }}"</strong></span>
+            <a href="{% url 'order_list' %}" class="btn btn-secondary" style="margin-left: 10px; padding: 5px 10px; font-size: 12px;">Clear Search</a>
+        </div>
+    {% endif %}
+    
+    <!-- Filters -->
     <div class="filters">
-      <div class="filters-row">
-        <div class="form-group">
-          <label>Status</label>
-          <select id="statusFilter">
-            <option value="">All Status</option>
-            <option value="pending">Pending</option>
-            <option value="progress">In Progress</option>
-            <option value="completed">Completed</option>
-            <option value="delivered">Delivered</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>Sort By</label>
-          <select id="sortFilter">
-            <option value="date_desc">Newest First</option>
-            <option value="date_asc">Oldest First</option>
-            <option value="due_date">Due Date</option>
-            <option value="customer">Customer Name</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label>&nbsp;</label>
-          <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
-        </div>
-      </div>
+        <form method="GET" class="filters-row">
+            <!-- Preserve search query in filters -->
+            {% if search_query %}
+                <input type="hidden" name="search" value="{{ search_query }}">
+            {% endif %}
+            
+            <div class="form-group">
+                <label>Status</label>
+                <select name="status" id="statusFilter">
+                    <option value="">All Status</option>
+                    {% for value, label in status_choices %}
+                        <option value="{{ value }}" {% if status_filter == value %}selected{% endif %}>
+                            {{ label }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>Sort By</label>
+                <select name="sort" id="sortFilter">
+                    <option value="date_desc" {% if sort_by == 'date_desc' %}selected{% endif %}>Newest First</option>
+                    <option value="date_asc" {% if sort_by == 'date_asc' %}selected{% endif %}>Oldest First</option>
+                    <option value="due_date" {% if sort_by == 'due_date' %}selected{% endif %}>Due Date</option>
+                    <option value="customer" {% if sort_by == 'customer' %}selected{% endif %}>Customer Name</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+            </div>
+        </form>
     </div>
 
-  {% comment %} <div class="orders-grid" id="allOrdersGrid"> {% endcomment %}
-  <div class="orders-grid" >
-    <!-- All orders will be populated here -->
-     <!-- Order 1 -->
-    <div class="order-card overdue" onclick="viewOrderDetails(1)">
-        <div class="order-header">
-          <div class="customer-name">Kevin Oduor</div>
-          <div class="order-status status-progress">progress</div>
+    <!-- Orders Grid -->
+    <div class="orders-grid">
+        {% if page_obj %}
+            {% for order in page_obj %}
+                <div class="order-card {% if order.is_overdue %}overdue{% endif %}" onclick="viewOrderDetails({{ order.id }})">
+                    <div class="order-header">
+                        <div class="customer-name">{{ order.customer.name }}</div>
+                        <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="detail-row">
+                            <span class="detail-label">Order Date:</span>
+                            <span class="detail-value">{{ order.created_at|date:"d-M-Y" }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Due Date:</span>
+                            <span class="detail-value {% if order.is_overdue %}balance-amount{% endif %}">
+                                {{ order.due_date|date:"d-M-Y" }}
+                            </span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Phone:</span>
+                            <span class="detail-value">{{ order.customer.phone_number }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-info">
+                        <div class="detail-row">
+                            <span class="detail-label">Total:</span>
+                            <span class="detail-value">KES {{ order.total_amount|floatformat:0 }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Paid:</span>
+                            <span class="detail-value paid-amount">KES {{ order.paid_amount|floatformat:0 }}</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="detail-label">Balance:</span>
+                            <span class="detail-value balance-amount">KES {{ order.balance_amount|floatformat:0 }}</span>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="no-orders" style="text-align: center; padding: 40px; color: #666;">
+                    {% if search_query or status_filter %}
+                        <h3>No orders found matching your criteria</h3>
+                        <p>Try adjusting your search or filters</p>
+                        <a href="{% url 'order_list' %}" class="btn btn-primary">View All Orders</a>
+                    {% else %}
+                        <h3>No orders yet</h3>
+                        <p>Start by creating your first order</p>
+                        <a href="{% url 'order_create' %}" class="btn btn-primary">Create Order</a>
+                    {% endif %}
+                </div>
+            {% endfor %}
+        {% endif %}
+    </div>
+    
+    <!-- Pagination -->
+    {% if page_obj.has_other_pages %}
+        <div class="pagination-container" style="margin-top: 30px; text-align: center;">
+            <div class="pagination">
+                {% if page_obj.has_previous %}
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page=1" class="btn btn-outline">First</a>
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ page_obj.previous_page_number }}" class="btn btn-outline">Previous</a>
+                {% endif %}
+                
+                <span class="page-info">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+                    ({{ page_obj.paginator.count }} total orders)
+                </span>
+                
+                {% if page_obj.has_next %}
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ page_obj.next_page_number }}" class="btn btn-outline">Next</a>
+                    <a href="?{% if search_query %}search={{ search_query }}&{% endif %}{% if status_filter %}status={{ status_filter }}&{% endif %}{% if sort_by %}sort={{ sort_by }}&{% endif %}page={{ page_obj.paginator.num_pages }}" class="btn btn-outline">Last</a>
+                {% endif %}
+            </div>
         </div>
-        <div class="order-details">
-          <div class="detail-row">
-            <span class="detail-label">Order Date:</span>
-            <span class="detail-value">01-Nov-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Due Date:</span>
-            <span class="detail-value balance-amount">15-Nov-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Phone:</span>
-            <span class="detail-value">+254787654321</span>
-          </div>
-        </div>
-        <div class="payment-info">
-          <div class="detail-row">
-            <span class="detail-label">Total:</span>
-            <span class="detail-value">KES 2,500</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Paid:</span>
-            <span class="detail-value paid-amount">KES 1,000</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Balance:</span>
-            <span class="detail-value balance-amount">KES 1,500</span>
-          </div>
-        </div>
-      </div>
-      <!-- Order 2 -->
-      <div class="order-card" onclick="viewOrderDetails(2)">
-        <div class="order-header">
-          <div class="customer-name">Nyaboke Patel</div>
-          <div class="order-status status-completed">completed</div>
-        </div>
-        <div class="order-details">
-          <div class="detail-row">
-            <span class="detail-label">Order Date:</span>
-            <span class="detail-value">05-Nov-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Due Date:</span>
-            <span class="detail-value">10-Nov-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Phone:</span>
-            <span class="detail-value">+25473456789</span>
-          </div>
-        </div>
-        <div class="payment-info">
-          <div class="detail-row">
-            <span class="detail-label">Total:</span>
-            <span class="detail-value">KES 1,800</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Paid:</span>
-            <span class="detail-value paid-amount">KES 1,800</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Balance:</span>
-            <span class="detail-value balance-amount">KES 0</span>
-          </div>
-        </div>
-      </div>
-      <!-- Order 3 -->
-      <div class="order-card overdue" onclick="viewOrderDetails(3)">
-        <div class="order-header">
-          <div class="customer-name">Maureen Gupta</div>
-          <div class="order-status status-pending">pending</div>
-        </div>
-        <div class="order-details">
-          <div class="detail-row">
-            <span class="detail-label">Order Date:</span>
-            <span class="detail-value">28-Oct-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Due Date:</span>
-            <span class="detail-value balance-amount">08-Nov-2024</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Phone:</span>
-            <span class="detail-value">+24578887776</span>
-          </div>
-        </div>
-        <div class="payment-info">
-          <div class="detail-row">
-            <span class="detail-label">Total:</span>
-            <span class="detail-value">KES 15,000</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Paid:</span>
-            <span class="detail-value paid-amount">KES 5,000</span>
-          </div>
-          <div class="detail-row">
-            <span class="detail-label">Balance:</span>
-            <span class="detail-value balance-amount">KES 10,000</span>
-          </div>
-        </div>
-      </div>
-  </div>
+    {% endif %}
 </div>
-{% endblock content %} {% block modals %}
+
+<script>
+// Remove the old applyFilters function since we're using form submission now
+function viewOrderDetails(orderId) {
+    // Navigate to order detail page
+    window.location.href = `/orders/${orderId}/`;
+}
+</script>
+
+{% endblock content %} 
+
+{% block modals %}
 <!-- Empty block - no modal here -->
 {% endblock modals %}
