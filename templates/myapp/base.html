@@ -23,27 +23,14 @@
               name="search"
               value="{{ search_query|default:'' }}"
               placeholder="Search customers or orders..."
-              style="border: none; outline: none; background: transparent; width: 100%; padding-right: 30px;"
+              style="border: none; outline: none;  width: 100%; padding-right: 30px;"
             />
             <button type="submit" style="background: none; border: none; cursor: pointer; position: absolute; right: 0;">
               <span class="search-icon">🔍</span>
             </button>
           </form>
         </div>
-        {% comment %} <div class="search-bar">
-          <form method="GET" action="{% url 'order_list' %}" >
-            <input
-              type="text"
-              id="searchInput"
-              value="{{ search_query|default:'' }}"
-              placeholder="Search customers or orders..."
-            />
-            <button>
-              <span class="search-icon">🔍</span>
-            </button>
-          </form>
-          
-        </div> {% endcomment %}
+        
         <div class="actions">
           <button class="add-order-btn" onclick="openNewOrderModal()">
             + New Order

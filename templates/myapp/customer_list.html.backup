@@ -1,0 +1,83 @@
+{% extends "./base.html" %}
+
+{% block title %}
+    Customer List
+{% endblock title %}
+
+{% block content %}
+<div id="customers" class="tab-content active">
+    <div class="orders-grid" id="customersGrid">
+        <!-- Customer 1: Kevin Oduor -->
+        <div class="order-card">
+            <div class="order-header">
+                <div class="customer-name">Kevin Oduor</div>
+                <div class="order-status status-progress">1 order</div>
+            </div>
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">+254787654321</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">WhatsApp:</span>
+                    <span class="detail-value">+254787654321</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Spent:</span>
+                    <span class="detail-value paid-amount">KES 1,000</span>
+                </div>
+            </div>
+        </div>
+        <!-- Customer 2: Nyaboke Patel -->
+        <div class="order-card">
+            <div class="order-header">
+                <div class="customer-name">Nyaboke Patel</div>
+                <div class="order-status status-progress">1 order</div>
+            </div>
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">+25473456789</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">WhatsApp:</span>
+                    <span class="detail-value">25473456789</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Spent:</span>
+                    <span class="detail-value paid-amount">KES 1,800</span>
+                </div>
+            </div>
+        </div>
+        <!-- Customer 3: Maureen Gupta -->
+        <div class="order-card">
+            <div class="order-header">
+                <div class="customer-name">Maureen Gupta</div>
+                <div class="order-status status-progress">1 order</div>
+            </div>
+            <div class="order-details">
+                <div class="detail-row">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">+24578887776</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">WhatsApp:</span>
+                    <span class="detail-value">+24578887776</span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Total Spent:</span>
+                    <span class="detail-value paid-amount">KES 5,000</span>
+                </div>
+            </div>
+        </div>
+        <!-- Empty state (commented out since we have customers) -->
+        <!--
+        <div class="empty-state">
+            <div class="empty-state-icon">👥</div>
+            <h3>No customers yet</h3>
+            <p>Customers will appear here once you create orders.</p>
+        </div>
+        -->
+    </div>
+</div>
+{% endblock content %}

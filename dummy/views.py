@@ -3,6 +3,10 @@ from .models import *
 from django.db.models import Q, Sum
 from django.core.paginator import Paginator
 from django.contrib import messages
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_POST
+import json
 
 # Create your views here.
 def dashboard(request):
@@ -72,8 +76,7 @@ def create_order(request):
     return render(request, 'myapp/create_order.html')
 
 def customer_list(request):
-
-    """List all customers"""
+    """List all customers with search functionality"""
     customers = Customer.objects.all().order_by('name')
     
     # Search
@@ -88,8 +91,98 @@ def customer_list(request):
         'customers': customers,
         'search_query': search_query,
     }
-
+    
     return render(request, 'myapp/customer_list.html', context)
+
+def customer_details(request, customer_id):
+    """Get detailed customer information as JSON"""
+    customer = get_object_or_404(Customer, id=customer_id)
+    
+    # Get customer's orders
+    orders = customer.orders.all().order_by('-created_at')[:10]  # Last 10 orders
+    
+    # Calculate totals
+    total_spent = sum(order.paid_amount for order in customer.orders.all())
+    total_balance = sum(order.total_amount - order.paid_amount for order in customer.orders.all())
+    
+    orders_data = []
+    for order in orders:
+        orders_data.append({
+            'id': order.id,
+            'status': order.get_status_display(),
+            'created_at': order.created_at.strftime('%d-%b-%Y'),
+            'due_date': order.due_date.strftime('%d-%b-%Y') if order.due_date else '',
+            'total_amount': float(order.total_amount),
+            'paid_amount': float(order.paid_amount),
+            'balance_amount': float(order.total_amount - order.paid_amount),
+            'description': getattr(order, 'description', ''),
+        })
+    
+    customer_data = {
+        'id': customer.id,
+        'name': customer.name,
+        'phone_number': customer.phone_number,
+        'whatsapp_number': customer.whatsapp_number,
+        'created_at': customer.created_at.strftime('%d-%b-%Y'),
+        'total_orders': customer.total_orders,
+        'total_spent': float(total_spent),
+        'total_balance': float(total_balance),
+        'orders': orders_data,
+    }
+    
+    return JsonResponse(customer_data)
+
+@require_POST
+def customer_delete(request, customer_id):
+    """Delete a customer and all associated orders"""
+    try:
+        customer = get_object_or_404(Customer, id=customer_id)
+        customer_name = customer.name
+        
+        # Delete the customer (this will cascade delete orders if properly configured)
+        customer.delete()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Customer "{customer_name}" has been deleted successfully.'
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)
+
+# Optional: Add customer edit functionality
+def customer_edit(request, customer_id):
+    """Edit customer information"""
+    customer = get_object_or_404(Customer, id=customer_id)
+    
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            customer.name = data.get('name', customer.name)
+            customer.phone_number = data.get('phone_number', customer.phone_number)
+            customer.whatsapp_number = data.get('whatsapp_number', customer.whatsapp_number)
+            
+            customer.save()
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Customer updated successfully'
+            })
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=400)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid request method'
+    }, status=405)
 
 def order_detail(request, order_id):
 
