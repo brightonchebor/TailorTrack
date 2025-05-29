@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
+from django.utils import timezone
 
 # Create your views here.
 def dashboard(request):
@@ -101,9 +102,9 @@ def customer_details(request, customer_id):
     # Get customer's orders
     orders = customer.orders.all().order_by('-created_at')[:10]  # Last 10 orders
     
-    # Calculate totals
-    total_spent = sum(order.paid_amount for order in customer.orders.all())
-    total_balance = sum(order.total_amount - order.paid_amount for order in customer.orders.all())
+    # Calculate totals using the correct field names
+    total_spent = sum(float(order.amount_paid) for order in customer.orders.all())
+    total_balance = sum(float(order.total_cost - order.amount_paid) for order in customer.orders.all())
     
     orders_data = []
     for order in orders:
@@ -112,17 +113,17 @@ def customer_details(request, customer_id):
             'status': order.get_status_display(),
             'created_at': order.created_at.strftime('%d-%b-%Y'),
             'due_date': order.due_date.strftime('%d-%b-%Y') if order.due_date else '',
-            'total_amount': float(order.total_amount),
-            'paid_amount': float(order.paid_amount),
-            'balance_amount': float(order.total_amount - order.paid_amount),
-            'description': getattr(order, 'description', ''),
+            'total_amount': float(order.total_cost),  # Using total_cost from model
+            'paid_amount': float(order.amount_paid),  # Using amount_paid from model
+            'balance_amount': float(order.total_cost - order.amount_paid),  # Calculated balance
+            'description': getattr(order, 'design_notes', ''),  # Using design_notes as description
         })
     
     customer_data = {
         'id': customer.id,
         'name': customer.name,
         'phone_number': customer.phone_number,
-        'whatsapp_number': customer.whatsapp_number,
+        'whatsapp_number': customer.whatsapp_number or '',
         'created_at': customer.created_at.strftime('%d-%b-%Y'),
         'total_orders': customer.total_orders,
         'total_spent': float(total_spent),
