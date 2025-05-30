@@ -9,7 +9,7 @@ Payment List Page
 <div id="payments" class="tab-content active">
   <div class="orders-grid">
     <!-- Payment info will be populated here -->
-    {% if orders %}
+    {% if orders_with_balance %}
       {% for order in orders_with_balance %}
       <div class="order-card">
         <div class="order-header">

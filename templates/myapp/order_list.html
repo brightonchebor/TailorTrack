@@ -18,7 +18,7 @@
     {% endif %}
 
     <!-- Orders Grid -->
-     {% if orders %}
+     
         <!-- Filters -->
         <div class="filters">
             <form method="GET" class="filters-row">
@@ -103,22 +103,19 @@
                             <p>Try adjusting your search or filters</p>
                             <a href="{% url 'order_list' %}" class="btn btn-primary">View All Orders</a>
                         {% else %}
-                            <h3>No orders yet</h3>
-                            <p>Start by creating your first order</p>
-                            <a href="{% url 'order_create' %}" class="btn btn-primary">Create Order</a>
+                            <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                                <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📑</div>
+                                    <h3>No orders yet</h3>
+                                    <p>Orders will appear here once you create them.</p>
+                                    <br/>
+                            </div>                
                         {% endif %}
                     </div>
                 {% endfor %}
             {% endif %}
         </div>
-    {% else %}
-        <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
-            <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📑</div>
-                <h3>No orders yet</h3>
-                <p>Orders will appear here once you create them.</p>
-                <br/>
-        </div>
-    {% endif %}
+   
+        
     <!-- Pagination -->
     {% if page_obj.has_other_pages %}
         <div class="pagination-container" style="margin-top: 30px; text-align: center;">
