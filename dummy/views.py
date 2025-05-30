@@ -255,6 +255,76 @@ def payment_list(request):
 
     return render(request, 'myapp/payment_list.html', context)
 
+@csrf_exempt
+@require_POST
+def record_payment(request):
+    """Record a payment for an order"""
+    try:
+        order_id = request.POST.get('order_id')
+        amount = request.POST.get('amount')
+        notes = request.POST.get('notes', '')
+        
+        # Validate input
+        if not order_id or not amount:
+            return JsonResponse({
+                'success': False,
+                'error': 'Order ID and amount are required.'
+            }, status=400)
+        
+        try:
+            amount = float(amount)
+        except ValueError:
+            return JsonResponse({
+                'success': False,
+                'error': 'Invalid amount format.'
+            }, status=400)
+        
+        if amount <= 0:
+            return JsonResponse({
+                'success': False,
+                'error': 'Payment amount must be greater than zero.'
+            }, status=400)
+        
+        # Get the order
+        order = get_object_or_404(Order, id=order_id)
+        
+        # Check if payment amount doesn't exceed balance
+        current_balance = float(order.total_cost) - float(order.amount_paid)
+        if amount > current_balance:
+            return JsonResponse({
+                'success': False,
+                'error': f'Payment amount cannot exceed outstanding balance of KES {current_balance:,.2f}'
+            }, status=400)
+        
+        # Create payment record
+        payment = Payment.objects.create(
+            order=order,
+            amount=amount,
+            notes=notes
+        )
+        
+        # Update order's amount_paid
+        order.amount_paid += amount
+        order.save()
+        
+        # Update order status if fully paid
+        if order.amount_paid >= order.total_cost:
+            order.status = 'completed'
+            order.save()
+        
+        return JsonResponse({
+            'success': True,
+            'message': f'Payment of KES {amount:,.2f} recorded successfully!',
+            'new_balance': float(order.total_cost) - float(order.amount_paid),
+            'new_amount_paid': float(order.amount_paid)
+        })
+        
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': f'An error occurred: {str(e)}'
+        }, status=500)    
+
 
 def login(request):
 
