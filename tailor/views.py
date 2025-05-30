@@ -23,7 +23,7 @@ def dashboard(request):
     total_revenue = Order.objects.aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
     
     # Recent orders
-    recent_orders = Order.objects.select_related('customer').order_by('-created_at')[:5]
+    recent_orders = Order.objects.select_related('customer').order_by('-created_at')[:3]
     
     context = {
         'total_orders': total_orders,
