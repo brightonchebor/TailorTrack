@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .models import *
-from django.db.models import Q, Sum
+from django.db.models import Q, Sum, F
 from django.core.paginator import Paginator
 from django.contrib import messages
 from django.http import JsonResponse
@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
 import json
 from django.utils import timezone
+from decimal import Decimal
 
 # Create your views here.
 def dashboard(request):
@@ -243,10 +244,9 @@ def order_list(request):
     return render(request, 'myapp/order_list.html', context)
 
 def payment_list(request):
-
     """List pending payments"""
     orders_with_balance = Order.objects.select_related('customer').filter(
-        total_cost__gt=models.F('amount_paid')
+        total_cost__gt=F('amount_paid')
     ).order_by('due_date')
     
     context = {
@@ -255,7 +255,6 @@ def payment_list(request):
 
     return render(request, 'myapp/payment_list.html', context)
 
-@csrf_exempt
 @require_POST
 def record_payment(request):
     """Record a payment for an order"""
@@ -272,8 +271,9 @@ def record_payment(request):
             }, status=400)
         
         try:
-            amount = float(amount)
-        except ValueError:
+            # Convert to Decimal to match database field type
+            amount = Decimal(str(amount))
+        except (ValueError, TypeError):
             return JsonResponse({
                 'success': False,
                 'error': 'Invalid amount format.'
@@ -289,7 +289,7 @@ def record_payment(request):
         order = get_object_or_404(Order, id=order_id)
         
         # Check if payment amount doesn't exceed balance
-        current_balance = float(order.total_cost) - float(order.amount_paid)
+        current_balance = order.total_cost - order.amount_paid
         if amount > current_balance:
             return JsonResponse({
                 'success': False,
@@ -303,7 +303,7 @@ def record_payment(request):
             notes=notes
         )
         
-        # Update order's amount_paid
+        # Update order's amount_paid - now both are Decimal
         order.amount_paid += amount
         order.save()
         
@@ -315,16 +315,14 @@ def record_payment(request):
         return JsonResponse({
             'success': True,
             'message': f'Payment of KES {amount:,.2f} recorded successfully!',
-            'new_balance': float(order.total_cost) - float(order.amount_paid),
+            'new_balance': float(order.total_cost - order.amount_paid),
             'new_amount_paid': float(order.amount_paid)
         })
-        
     except Exception as e:
         return JsonResponse({
             'success': False,
             'error': f'An error occurred: {str(e)}'
-        }, status=500)    
-
+        }, status=500) 
 
 def login(request):
 
