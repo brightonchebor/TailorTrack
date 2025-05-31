@@ -6,24 +6,26 @@ from django.contrib import messages
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.contrib.auth.decorators import login_required
 import json
 from django.utils import timezone
 from decimal import Decimal
 
 # Create your views here.
+@login_required
 def dashboard(request):
-
-    # Statistics
-    total_orders = Order.objects.count()
-    active_orders = Order.objects.exclude(status='delivered').count()
+    # Statistics - filter by current user
+    total_orders = Order.objects.filter(customer__user=request.user).count()
+    active_orders = Order.objects.filter(customer__user=request.user).exclude(status='delivered').count()
     overdue_orders = Order.objects.filter(
+        customer__user=request.user,
         due_date__lt=timezone.now().date(),
         status__in=['pending', 'progress']
     ).count()
-    total_revenue = Order.objects.aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
+    total_revenue = Order.objects.filter(customer__user=request.user).aggregate(Sum('amount_paid'))['amount_paid__sum'] or 0
     
-    # Recent orders
-    recent_orders = Order.objects.select_related('customer').order_by('-created_at')[:3]
+    # Recent orders - filter by current user
+    recent_orders = Order.objects.filter(customer__user=request.user).select_related('customer').order_by('-created_at')[:3]
     
     context = {
         'total_orders': total_orders,
@@ -35,8 +37,8 @@ def dashboard(request):
 
     return render(request, 'tailor/dashboard.html', context)
 
+@login_required
 def create_order(request):
-
     """Create new order"""
     if request.method == 'POST':
         # Handle form submission
@@ -44,12 +46,14 @@ def create_order(request):
         phone_number = request.POST.get('phone_number')
         whatsapp_number = request.POST.get('whatsapp_number', phone_number)
         
-        # Get or create customer
+        # Get or create customer - link to current user
         customer, created = Customer.objects.get_or_create(
             phone_number=phone_number,
+            user=request.user,  # Filter by current user
             defaults={
                 'name': customer_name,
-                'whatsapp_number': whatsapp_number
+                'whatsapp_number': whatsapp_number,
+                'user': request.user  # Set user when creating
             }
         )
         
@@ -77,9 +81,10 @@ def create_order(request):
 
     return render(request, 'tailor/create_order.html')
 
+@login_required
 def customer_list(request):
-    """List all customers with search functionality"""
-    customers = Customer.objects.all().order_by('name')
+    """List all customers with search functionality - filter by current user"""
+    customers = Customer.objects.filter(user=request.user).order_by('name')
     
     # Search
     search_query = request.GET.get('search', '')
@@ -96,9 +101,10 @@ def customer_list(request):
     
     return render(request, 'tailor/customer_list.html', context)
 
+@login_required
 def customer_details(request, customer_id):
-    """Get detailed customer information as JSON"""
-    customer = get_object_or_404(Customer, id=customer_id)
+    """Get detailed customer information as JSON - ensure customer belongs to current user"""
+    customer = get_object_or_404(Customer, id=customer_id, user=request.user)
     
     # Get customer's orders with design images
     orders = customer.orders.prefetch_related('design_images').all().order_by('-created_at')[:10]  # Last 10 orders
@@ -144,11 +150,12 @@ def customer_details(request, customer_id):
     
     return JsonResponse(customer_data)
 
+@login_required
 @require_POST
 def customer_delete(request, customer_id):
-    """Delete a customer and all associated orders"""
+    """Delete a customer and all associated orders - ensure customer belongs to current user"""
     try:
-        customer = get_object_or_404(Customer, id=customer_id)
+        customer = get_object_or_404(Customer, id=customer_id, user=request.user)
         customer_name = customer.name
         
         # Delete the customer (this will cascade delete orders if properly configured)
@@ -165,10 +172,10 @@ def customer_delete(request, customer_id):
             'error': str(e)
         }, status=400)
 
-# Optional: Add customer edit functionality
+@login_required
 def customer_edit(request, customer_id):
-    """Edit customer information"""
-    customer = get_object_or_404(Customer, id=customer_id)
+    """Edit customer information - ensure customer belongs to current user"""
+    customer = get_object_or_404(Customer, id=customer_id, user=request.user)
     
     if request.method == 'POST':
         try:
@@ -196,10 +203,14 @@ def customer_edit(request, customer_id):
         'error': 'Invalid request method'
     }, status=405)
 
+@login_required
 def order_detail(request, order_id):
-
-    """View order details"""
-    order = get_object_or_404(Order.objects.select_related('customer'), id=order_id)
+    """View order details - ensure order belongs to current user"""
+    order = get_object_or_404(
+        Order.objects.select_related('customer'), 
+        id=order_id, 
+        customer__user=request.user
+    )
     payments = order.payments.all().order_by('-payment_date')
     
     context = {
@@ -209,10 +220,10 @@ def order_detail(request, order_id):
 
     return render(request, 'tailor/order_detail.html', context)
 
+@login_required
 def order_list(request):
-
-    """List all orders with filtering and searching"""
-    orders = Order.objects.select_related('customer').all()
+    """List all orders with filtering and searching - filter by current user"""
+    orders = Order.objects.filter(customer__user=request.user).select_related('customer')
     
     # Search
     search_query = request.GET.get('search', '')
@@ -253,11 +264,13 @@ def order_list(request):
 
     return render(request, 'tailor/order_list.html', context)
 
+@login_required
 def payment_list(request):
-    """List pending payments"""
-    orders_with_balance = Order.objects.select_related('customer').filter(
+    """List pending payments - filter by current user"""
+    orders_with_balance = Order.objects.filter(
+        customer__user=request.user,
         total_cost__gt=F('amount_paid')
-    ).order_by('due_date')
+    ).select_related('customer').order_by('due_date')
     
     context = {
         'orders_with_balance': orders_with_balance,
@@ -265,9 +278,10 @@ def payment_list(request):
 
     return render(request, 'tailor/payment_list.html', context)
 
+@login_required
 @require_POST
 def record_payment(request):
-    """Record a payment for an order"""
+    """Record a payment for an order - ensure order belongs to current user"""
     try:
         order_id = request.POST.get('order_id')
         amount = request.POST.get('amount')
@@ -295,8 +309,8 @@ def record_payment(request):
                 'error': 'Payment amount must be greater than zero.'
             }, status=400)
         
-        # Get the order
-        order = get_object_or_404(Order, id=order_id)
+        # Get the order - ensure it belongs to current user
+        order = get_object_or_404(Order, id=order_id, customer__user=request.user)
         
         # Check if payment amount doesn't exceed balance
         current_balance = order.total_cost - order.amount_paid
@@ -332,5 +346,4 @@ def record_payment(request):
         return JsonResponse({
             'success': False,
             'error': f'An error occurred: {str(e)}'
-        }, status=500) 
-
+        }, status=500)
