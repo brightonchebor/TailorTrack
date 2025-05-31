@@ -35,6 +35,14 @@
 
     <br/><br/>
     <div class="container" style="max-width: 400px; margin: 0 auto;">
+      <ul>
+        {% for message in messages %} 
+        <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+          {{ message }}
+        </li>
+        {% endfor %}
+      </ul>
+      <br/>
       <h2>Create Your Account</h2>
       <form method="post" action="{% url 'register' %}">
         {% csrf_token %}

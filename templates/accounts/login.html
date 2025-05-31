@@ -36,6 +36,14 @@
     <div class="container" style="max-width: 400px; margin: 0 auto;">
       <div class="row justify-content-center">
         <div class="col-md-6">
+          <ul>
+            {% for message in messages %} 
+            <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
+              {{ message }}
+            </li>
+            {% endfor %}
+          </ul>
+          <br/>
           <h2>Login To TailorTrack</h2>
           <form method="post" action="{% url 'login' %}">
             {% csrf_token %}
