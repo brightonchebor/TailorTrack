@@ -5,7 +5,7 @@
 {% endblock title %}
 
 {% block content %}
-{% if user_authenticated %}
+{% if user.is_authenticated %}
 <div id="customers" class="tab-content active">
     <h2 style="margin-bottom: 20px;">All Customers</h2>
     

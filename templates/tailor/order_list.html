@@ -2,7 +2,7 @@
 {% block title %} Order List Page {% endblock title%} 
 {% block content %}
 
-{% if user_authenticated %}
+{% if user.is_authenticated %}
     <!-- All Orders Tab -->
     <div id="orders" class="tab-content active">
         <h2 style="margin-bottom: 20px;">All Orders</h2>

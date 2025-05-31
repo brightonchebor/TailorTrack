@@ -510,7 +510,7 @@
 
           <div class="form-actions">
             <a href="{% url 'dashboard' %}" class="cancel-btn" style="text-decoration: none; display: inline-block; text-align: center;">Cancel</a>
-            {% if user_authenticated %}
+            {% if user.is_authenticated %}
             <button type="submit" class="create-btn">Create Order</button>
             {% endif %}
           </div>

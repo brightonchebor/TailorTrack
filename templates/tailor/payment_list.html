@@ -6,7 +6,7 @@ Payment List Page
 
 {% block content %}
 
-{% if user_authenticated %}
+{% if user.is_authenticated %}
 <!-- Payments Tab -->
 <div id="payments" class="tab-content active">
   <div class="orders-grid">

@@ -1,8 +1,11 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.utils import timezone
+from django.contrib.auth.models import User
 
 class Customer(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='customers')  
+    name = models.CharField(max_length=100)
     name = models.CharField(max_length=100)
     phone_number = models.CharField(
         max_length=15,
@@ -12,7 +15,7 @@ class Customer(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     
     class Meta:
-        unique_together = ['phone_number']
+        unique_together = ['user', 'phone_number']
     
     def __str__(self):
         return self.name
@@ -84,4 +87,4 @@ class Payment(models.Model):
     notes = models.TextField(blank=True)
     
     def __str__(self):
-        return f"Payment of ₹{self.amount} for Order #{self.order.id}"
+        return f"Payment of KES {self.amount} for Order #{self.order.id}"
