@@ -5,6 +5,7 @@
 {% endblock title %}
 
 {% block content %}
+{% if user_authenticated %}
 <div id="customers" class="tab-content active">
     <h2 style="margin-bottom: 20px;">All Customers</h2>
     
@@ -608,5 +609,13 @@ window.onclick = function(event) {
     }
 }
 </script>
+
+{% else %}
+    <div class="empty-state" style="text-align: center;  padding: 40px; color: #666;">
+        <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📈</div>
+        <h3>Ready to Manage Your Business?</h3>
+        <p>Please <a href="{% url 'login' %}">Sign in</a> to start creating orders, tracking customers, and growing your business.</p>
+    </div> 
+{% endif %}
 
 {% endblock content %}

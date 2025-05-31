@@ -5,6 +5,8 @@ Payment List Page
 {% endblock title %} 
 
 {% block content %}
+
+{% if user_authenticated %}
 <!-- Payments Tab -->
 <div id="payments" class="tab-content active">
   <div class="orders-grid">
@@ -514,5 +516,13 @@ document.addEventListener('keydown', function(event) {
   }
 });
 </script>
+
+{% else %}
+  <div class="empty-state" style="text-align: center;  padding: 40px; color: #666;">
+    <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📈</div>
+    <h3>Ready to Manage Your Business?</h3>
+    <p>Please <a href="{% url 'login' %}">Sign in</a> to start creating orders, tracking customers, and growing your business.</p>
+  </div> 
+{% endif %}
 
 {% endblock content %}
