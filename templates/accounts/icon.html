@@ -1,0 +1,113 @@
+{# templates/includes/icon.html #}
+<div class="user-menu">
+  <!-- The icon itself -->
+  <button id="userIcon" class="user-icon" aria-label="User menu">👤</button>
+
+  <!-- Hidden by default; toggled by JS -->
+  <div id="userPopup" class="user-popup">
+    <ul>
+      <li><a href="{% url "login" %}">Login</a></li>
+      <li><a href="{% url "register" %}">Register</a></li>
+      <li><a href="#">Logout</a></li>
+
+    </ul>
+  </div>
+</div>
+
+<style>
+    /* User Menu Styling */
+    .user-menu {
+        position: relative;
+        display: inline-block;
+    }
+
+    .user-icon {
+        background: rgba(255, 255, 255, 0.2);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        color: white;
+        font-size: 1.2rem;
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+
+    .user-icon:hover {
+        background: rgba(255, 255, 255, 0.3);
+        border-color: rgba(255, 255, 255, 0.5);
+        transform: scale(1.05);
+    }
+
+    .user-popup {
+        position: absolute;
+        right: 0;
+        top: calc(100% + 10px);
+        background: white;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        padding: 0.5rem 0;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        display: none;
+        z-index: 1000;
+        min-width: 140px;
+    }
+
+    .user-popup::before {
+        content: '';
+        position: absolute;
+        top: -6px;
+        right: 15px;
+        width: 12px;
+        height: 12px;
+        background: white;
+        border-left: 1px solid #e0e0e0;
+        border-top: 1px solid #e0e0e0;
+        transform: rotate(45deg);
+    }
+
+    .user-popup ul {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+    }
+
+    .user-popup li {
+        padding: 0;
+    }
+
+    .user-popup a {
+        display: block;
+        padding: 0.75rem 1rem;
+        text-decoration: none;
+        color: #333;
+        transition: background-color 0.2s;
+    }
+
+    .user-popup a:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const icon = document.getElementById("userIcon");
+    const popup = document.getElementById("userPopup");
+
+    // Toggle visibility
+    icon.addEventListener("click", () => {
+      popup.style.display = popup.style.display === "block" ? "none" : "block";
+    });
+
+    // Close if click outside
+    document.addEventListener("click", (e) => {
+      if (!icon.contains(e.target) && !popup.contains(e.target)) {
+        popup.style.display = "none";
+      }
+    });
+  });
+</script>
