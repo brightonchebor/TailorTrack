@@ -229,32 +229,6 @@
     background: #f9f9f9;
 }
 
-.design-images {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-top: 10px;
-}
-
-.design-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 4px;
-    border: 1px solid #ddd;
-    cursor: pointer;
-    transition: transform 0.2s;
-}
-
-.design-image:hover {
-    transform: scale(1.05);
-}
-
-.no-images {
-    color: #666;
-    font-style: italic;
-}
-
 /* Responsive Design */
 @media (max-width: 768px) {
     .customer-item {
@@ -271,11 +245,6 @@
     
     .detail-grid {
         grid-template-columns: 1fr;
-    }
-    
-    .design-image {
-        width: 80px;
-        height: 80px;
     }
 }
 </style>
@@ -307,6 +276,7 @@ function tryFetchCustomerDetails(urls, index, modalBody, customerId) {
     fetch(currentUrl)
         .then(response => {
             console.log(`${currentUrl} - Status:`, response.status);
+            
             if (!response.ok) {
                 throw new Error(`HTTP ${response.status}`);
             }
@@ -318,6 +288,7 @@ function tryFetchCustomerDetails(urls, index, modalBody, customerId) {
         })
         .catch(error => {
             console.log(`${currentUrl} failed:`, error.message);
+            // Try next URL
             tryFetchCustomerDetails(urls, index + 1, modalBody, customerId);
         });
 }
@@ -327,9 +298,11 @@ function showCustomerDetails(customerId) {
     const modal = document.getElementById('customerModal');
     const modalBody = document.getElementById('customerModalBody');
     
+    // Show modal
     modal.style.display = 'flex';
     modalBody.innerHTML = '<div class="loading">Loading customer details...</div>';
     
+    // Try different possible endpoint URLs
     const possibleUrls = [
         `/customers/${customerId}/details/`,
         `/customer/${customerId}/`,
@@ -337,6 +310,7 @@ function showCustomerDetails(customerId) {
         `/api/customers/${customerId}/`
     ];
     
+    // Try the first URL, then fallback to others if needed
     tryFetchCustomerDetails(possibleUrls, 0, modalBody, customerId);
 }
 
@@ -346,30 +320,191 @@ function displayCustomerDetails(customer) {
     
     modalName.textContent = customer.name;
     
+    const ordersHtml = customer.orders.map(order => `
+        <div class="order-item">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <strong>Order #${order.id}</strong> - ${order.status}
+                    <br><small>Created: ${order.created_at}</small>
+                </div>
+                <div style="text-align: right;">
+                    <div>Total: KES ${order.total_amount}</div>
+                    <div>Paid: KES ${order.paid_amount}</div>
+                    <div style="color: ${order.balance_amount > 0 ? '#dc3545' : '#28a745'};">
+                        Balance: KES ${order.balance_amount}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `).join('');
+    
+    modalBody.innerHTML = `
+        <div class="customer-detail-section">
+            <h4>Contact Information</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Phone:</span>
+                    <span class="detail-value">${customer.phone_number}</span>
+                </div>
+                ${customer.whatsapp_number ? `
+                <div class="detail-item">
+                    <span class="detail-label">WhatsApp:</span>
+                    <span class="detail-value">${customer.whatsapp_number}</span>
+                </div>
+                ` : ''}
+                <div class="detail-item">
+                    <span class="detail-label">Joined:</span>
+                    <span class="detail-value">${customer.created_at}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="customer-detail-section">
+            <h4>Order Summary</h4>
+            <div class="detail-grid">
+                <div class="detail-item">
+                    <span class="detail-label">Total Orders:</span>
+                    <span class="detail-value">${customer.total_orders}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Total Spent:</span>
+                    <span class="detail-value">KES ${customer.total_spent}</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">Outstanding Balance:</span>
+                    <span class="detail-value" style="color: ${customer.total_balance > 0 ? '#dc3545' : '#28a745'};">KES ${customer.total_balance}</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="customer-detail-section">
+            <h4>Recent Orders</h4>
+            <div class="orders-list">
+                ${customer.orders.length > 0 ? ordersHtml : '<p>No orders yet</p>'}
+            </div>
+        </div>
+    `;
+}
+
+function closeCustomerModal() {
+    document.getElementById('customerModal').style.display = 'none';
+    currentCustomerId = null;
+}
+
+function confirmDeleteCustomer() {
+    document.getElementById('deleteConfirmModal').style.display = 'flex';
+}
+
+function closeDeleteConfirmModal() {
+    document.getElementById('deleteConfirmModal').style.display = 'none';
+}
+
+function deleteCustomer() {
+    if (!currentCustomerId) return;
+    
+    const confirmBtn = document.getElementById('confirmDeleteBtn');
+    confirmBtn.textContent = 'Deleting...';
+    confirmBtn.disabled = true;
+    
+    fetch(`/customers/${currentCustomerId}/delete/`, {
+        method: 'POST',
+        headers: {
+            'X-CSRFToken': getCookie('csrftoken'),
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            closeDeleteConfirmModal();
+            closeCustomerModal();
+            // Reload page to reflect changes
+            window.location.reload();
+        } else {
+            alert('Error deleting customer: ' + data.error);
+        }
+    })
+    .catch(error => {
+        alert('Error deleting customer. Please try again.');
+        console.error('Error:', error);
+    })
+    .finally(() => {
+        confirmBtn.textContent = 'Yes, Delete';
+        confirmBtn.disabled = false;
+    });
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const customerModal = document.getElementById('customerModal');
+    const deleteModal = document.getElementById('deleteConfirmModal');
+    
+    if (event.target === customerModal) {
+        closeCustomerModal();
+    }
+    if (event.target === deleteModal) {
+        closeDeleteConfirmModal();
+    }
+}
+function displayCustomerDetails(customer) {
+    const modalName = document.getElementById('customerModalName');
+    const modalBody = document.getElementById('customerModalBody');
+    
+    modalName.textContent = customer.name;
+    
     const ordersHtml = customer.orders.map(order => {
-        const imagesHtml = order.images.length > 0
-            ? order.images.map(img => `
-                <img src="${img.url}" alt="Design for Order #${order.id}" class="design-image" onclick="openImageViewer('${img.url}')">
-            `).join('')
-            : '<p class="no-images">No design images available</p>';
+        // Create design images HTML
+        let designImagesHtml = '';
+        if (order.design_images && order.design_images.length > 0) {
+            designImagesHtml = `
+                <div style="margin-top: 10px;">
+                    <strong>Design Images:</strong>
+                    <div class="design-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 8px;">
+                        ${order.design_images.map(image => `
+                            <div class="design-image-item">
+                                <img src="${image.url}" alt="Design Image" 
+                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid #ddd;" 
+                                     onclick="showImageModal('${image.url}')"
+                                     title="Click to view full size">
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
         
         return `
             <div class="order-item">
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <div>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
                         <strong>Order #${order.id}</strong> - ${order.status}
                         <br><small>Created: ${order.created_at}</small>
+                        ${order.description ? `<br><small><em>${order.description}</em></small>` : ''}
+                        ${designImagesHtml}
                     </div>
-                    <div style="text-align: right;">
+                    <div style="text-align: right; margin-left: 15px;">
                         <div>Total: KES ${order.total_amount}</div>
                         <div>Paid: KES ${order.paid_amount}</div>
                         <div style="color: ${order.balance_amount > 0 ? '#dc3545' : '#28a745'};">
                             Balance: KES ${order.balance_amount}
                         </div>
                     </div>
-                </div>
-                <div class="design-images">
-                    ${imagesHtml}
                 </div>
             </div>
         `;
@@ -423,95 +558,53 @@ function displayCustomerDetails(customer) {
     `;
 }
 
-function openImageViewer(imageUrl) {
-    const viewer = window.open('', '_blank');
-    viewer.document.write(`
-        <html>
-            <head>
-                <title>Design Image</title>
-                <style>
-                    body { margin: 0; display: flex; justify-content: center; align-items: center; height: 100vh; background: #000; }
-                    img { max-width: 90%; max-height: 90%; object-fit: contain; }
-                </style>
-            </head>
-            <body>
-                <img src="${imageUrl}" alt="Design Image">
-            </body>
-        </html>
-    `);
-}
-
-function closeCustomerModal() {
-    document.getElementById('customerModal').style.display = 'none';
-    currentCustomerId = null;
-}
-
-function confirmDeleteCustomer() {
-    document.getElementById('deleteConfirmModal').style.display = 'flex';
-}
-
-function closeDeleteConfirmModal() {
-    document.getElementById('deleteConfirmModal').style.display = 'none';
-}
-
-function deleteCustomer() {
-    if (!currentCustomerId) return;
-    
-    const confirmBtn = document.getElementById('confirmDeleteBtn');
-    confirmBtn.textContent = 'Deleting...';
-    confirmBtn.disabled = true;
-    
-    fetch(`/customers/${currentCustomerId}/delete/`, {
-        method: 'POST',
-        headers: {
-            'X-CSRFToken': getCookie('csrftoken'),
-            'Content-Type': 'application/json',
-        },
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            closeDeleteConfirmModal();
-            closeCustomerModal();
-            window.location.reload();
-        } else {
-            alert('Error deleting customer: ' + data.error);
-        }
-    })
-    .catch(error => {
-        alert('Error deleting customer. Please try again.');
-        console.error('Error:', error);
-    })
-    .finally(() => {
-        confirmBtn.textContent = 'Yes, Delete';
-        confirmBtn.disabled = false;
-    });
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
+// Function to show image in a modal
+function showImageModal(imageUrl) {
+    // Create image modal if it doesn't exist
+    let imageModal = document.getElementById('imageModal');
+    if (!imageModal) {
+        imageModal = document.createElement('div');
+        imageModal.id = 'imageModal';
+        imageModal.className = 'modal';
+        imageModal.style.display = 'none';
+        imageModal.innerHTML = `
+            <div class="modal-content" style="max-width: 90%; max-height: 90%; padding: 0; background: transparent; box-shadow: none;">
+                <div style="position: relative; text-align: center;">
+                    <span class="close" onclick="closeImageModal()" style="position: absolute; top: -40px; right: 0; color: white; font-size: 30px; z-index: 1001;">&times;</span>
+                    <img id="modalImage" src="" alt="Design Image" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px;">
+                </div>
+            </div>
+        `;
+        document.body.appendChild(imageModal);
     }
-    return cookieValue;
+    
+    // Set the image source and show modal
+    document.getElementById('modalImage').src = imageUrl;
+    imageModal.style.display = 'flex';
 }
 
+// Function to close image modal
+function closeImageModal() {
+    const imageModal = document.getElementById('imageModal');
+    if (imageModal) {
+        imageModal.style.display = 'none';
+    }
+}
+
+// Update the window click handler to include image modal
 window.onclick = function(event) {
     const customerModal = document.getElementById('customerModal');
     const deleteModal = document.getElementById('deleteConfirmModal');
+    const imageModal = document.getElementById('imageModal');
     
     if (event.target === customerModal) {
         closeCustomerModal();
     }
     if (event.target === deleteModal) {
         closeDeleteConfirmModal();
+    }
+    if (event.target === imageModal) {
+        closeImageModal();
     }
 }
 </script>

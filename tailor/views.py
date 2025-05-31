@@ -95,9 +95,9 @@ def customer_list(request):
     }
     
     return render(request, 'myapp/customer_list.html', context)
-
+"""
 def customer_details(request, customer_id):
-    """Get detailed customer information as JSON"""
+    #Get detailed customer information as JSON
     customer = get_object_or_404(Customer, id=customer_id)
     
     # Get customer's orders
@@ -118,6 +118,54 @@ def customer_details(request, customer_id):
             'paid_amount': float(order.amount_paid),  # Using amount_paid from model
             'balance_amount': float(order.total_cost - order.amount_paid),  # Calculated balance
             'description': getattr(order, 'design_notes', ''),  # Using design_notes as description
+        })
+    
+    customer_data = {
+        'id': customer.id,
+        'name': customer.name,
+        'phone_number': customer.phone_number,
+        'whatsapp_number': customer.whatsapp_number or '',
+        'created_at': customer.created_at.strftime('%d-%b-%Y'),
+        'total_orders': customer.total_orders,
+        'total_spent': float(total_spent),
+        'total_balance': float(total_balance),
+        'orders': orders_data,
+    }
+    
+    return JsonResponse(customer_data)
+"""
+def customer_details(request, customer_id):
+    """Get detailed customer information as JSON"""
+    customer = get_object_or_404(Customer, id=customer_id)
+    
+    # Get customer's orders with design images
+    orders = customer.orders.prefetch_related('design_images').all().order_by('-created_at')[:10]  # Last 10 orders
+    
+    # Calculate totals using the correct field names
+    total_spent = sum(float(order.amount_paid) for order in customer.orders.all())
+    total_balance = sum(float(order.total_cost - order.amount_paid) for order in customer.orders.all())
+    
+    orders_data = []
+    for order in orders:
+        # Get design images for this order
+        design_images = []
+        for image in order.design_images.all():
+            design_images.append({
+                'id': image.id,
+                'url': image.image.url,
+                'uploaded_at': image.uploaded_at.strftime('%d-%b-%Y')
+            })
+        
+        orders_data.append({
+            'id': order.id,
+            'status': order.get_status_display(),
+            'created_at': order.created_at.strftime('%d-%b-%Y'),
+            'due_date': order.due_date.strftime('%d-%b-%Y') if order.due_date else '',
+            'total_amount': float(order.total_cost),  # Using total_cost from model
+            'paid_amount': float(order.amount_paid),  # Using amount_paid from model
+            'balance_amount': float(order.total_cost - order.amount_paid),  # Calculated balance
+            'description': getattr(order, 'design_notes', ''),  # Using design_notes as description
+            'design_images': design_images,  # Add design images
         })
     
     customer_data = {
