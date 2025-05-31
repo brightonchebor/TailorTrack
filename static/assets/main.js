@@ -38,89 +38,89 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 
 // Sample data for demonstration
-function loadSampleData() {
-  const sampleOrders = [
-    {
-      id: 1,
-      customerName: "Kevin Oduor",
-      phoneNumber: "+254787654321",
-      whatsappNumber: "+254787654321",
-      orderDate: "2024-11-01",
-      dueDate: "2024-11-15",
-      status: "progress",
-      measurements: {
-        bust: 36,
-        waist: 28,
-        hips: 38,
-        length: 40,
-        notes: "Slightly loose fitting preferred",
-      },
-      designNotes: "Traditional saree blouse with gold thread work",
-      totalCost: 2500,
-      amountPaid: 1000,
-      balance: 1500,
-    },
-    {
-      id: 2,
-      customerName: "Nyaboke Patel",
-      phoneNumber: "+25473456789",
-      whatsappNumber: "25473456789",
-      orderDate: "2024-11-05",
-      dueDate: "2024-11-10",
-      status: "completed",
-      measurements: {
-        bust: 34,
-        waist: 26,
-        hips: 36,
-        length: 38,
-        notes: "Standard fit",
-      },
-      designNotes: "Simple kurti with minimal embroidery",
-      totalCost: 1800,
-      amountPaid: 1800,
-      balance: 0,
-    },
-    {
-      id: 3,
-      customerName: "Maureen Gupta",
-      phoneNumber: "+24578887776",
-      whatsappNumber: "+24578887776",
-      orderDate: "2024-10-28",
-      dueDate: "2024-11-08",
-      status: "pending",
-      measurements: {
-        bust: 38,
-        waist: 30,
-        hips: 40,
-        length: 42,
-        notes: "Extra room in waist area",
-      },
-      designNotes: "Wedding lehenga with heavy work",
-      totalCost: 15000,
-      amountPaid: 5000,
-      balance: 10000,
-    },
-  ];
+// function loadSampleData() {
+//   const sampleOrders = [
+//     {
+//       id: 1,
+//       customerName: "Kevin Oduor",
+//       phoneNumber: "+254787654321",
+//       whatsappNumber: "+254787654321",
+//       orderDate: "2024-11-01",
+//       dueDate: "2024-11-15",
+//       status: "progress",
+//       measurements: {
+//         bust: 36,
+//         waist: 28,
+//         hips: 38,
+//         length: 40,
+//         notes: "Slightly loose fitting preferred",
+//       },
+//       designNotes: "Traditional saree blouse with gold thread work",
+//       totalCost: 2500,
+//       amountPaid: 1000,
+//       balance: 1500,
+//     },
+//     {
+//       id: 2,
+//       customerName: "Nyaboke Patel",
+//       phoneNumber: "+25473456789",
+//       whatsappNumber: "25473456789",
+//       orderDate: "2024-11-05",
+//       dueDate: "2024-11-10",
+//       status: "completed",
+//       measurements: {
+//         bust: 34,
+//         waist: 26,
+//         hips: 36,
+//         length: 38,
+//         notes: "Standard fit",
+//       },
+//       designNotes: "Simple kurti with minimal embroidery",
+//       totalCost: 1800,
+//       amountPaid: 1800,
+//       balance: 0,
+//     },
+//     {
+//       id: 3,
+//       customerName: "Maureen Gupta",
+//       phoneNumber: "+24578887776",
+//       whatsappNumber: "+24578887776",
+//       orderDate: "2024-10-28",
+//       dueDate: "2024-11-08",
+//       status: "pending",
+//       measurements: {
+//         bust: 38,
+//         waist: 30,
+//         hips: 40,
+//         length: 42,
+//         notes: "Extra room in waist area",
+//       },
+//       designNotes: "Wedding lehenga with heavy work",
+//       totalCost: 15000,
+//       amountPaid: 5000,
+//       balance: 10000,
+//     },
+//   ];
 
-  orders = sampleOrders;
+//   orders = sampleOrders;
 
-  // Extract unique customers
-  customers = orders
-    .map((order) => ({
-      name: order.customerName,
-      phone: order.phoneNumber,
-      whatsapp: order.whatsappNumber,
-      totalOrders: orders.filter((o) => o.customerName === order.customerName)
-        .length,
-      totalSpent: orders
-        .filter((o) => o.customerName === order.customerName)
-        .reduce((sum, o) => sum + o.amountPaid, 0),
-    }))
-    .filter(
-      (customer, index, self) =>
-        index === self.findIndex((c) => c.phone === customer.phone)
-    );
-}
+//   // Extract unique customers
+//   customers = orders
+//     .map((order) => ({
+//       name: order.customerName,
+//       phone: order.phoneNumber,
+//       whatsapp: order.whatsappNumber,
+//       totalOrders: orders.filter((o) => o.customerName === order.customerName)
+//         .length,
+//       totalSpent: orders
+//         .filter((o) => o.customerName === order.customerName)
+//         .reduce((sum, o) => sum + o.amountPaid, 0),
+//     }))
+//     .filter(
+//       (customer, index, self) =>
+//         index === self.findIndex((c) => c.phone === customer.phone)
+//     );
+// }
 
 // Tab switching functionality
 function switchTab(tabName) {
