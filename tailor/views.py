@@ -33,7 +33,7 @@ def dashboard(request):
         'recent_orders': recent_orders,
     }
 
-    return render(request, 'myapp/dashboard.html', context)
+    return render(request, 'tailor/dashboard.html', context)
 
 def create_order(request):
 
@@ -75,7 +75,7 @@ def create_order(request):
         messages.success(request, 'Order created successfully!')
         return redirect('dashboard')
 
-    return render(request, 'myapp/create_order.html')
+    return render(request, 'tailor/create_order.html')
 
 def customer_list(request):
     """List all customers with search functionality"""
@@ -94,7 +94,7 @@ def customer_list(request):
         'search_query': search_query,
     }
     
-    return render(request, 'myapp/customer_list.html', context)
+    return render(request, 'tailor/customer_list.html', context)
 
 def customer_details(request, customer_id):
     """Get detailed customer information as JSON"""
@@ -207,7 +207,7 @@ def order_detail(request, order_id):
         'payments': payments,
     }
 
-    return render(request, 'myapp/order_detail.html', context)
+    return render(request, 'tailor/order_detail.html', context)
 
 def order_list(request):
 
@@ -251,7 +251,7 @@ def order_list(request):
         'status_choices': Order.STATUS_CHOICES,
     }
 
-    return render(request, 'myapp/order_list.html', context)
+    return render(request, 'tailor/order_list.html', context)
 
 def payment_list(request):
     """List pending payments"""
@@ -263,7 +263,7 @@ def payment_list(request):
         'orders_with_balance': orders_with_balance,
     }
 
-    return render(request, 'myapp/payment_list.html', context)
+    return render(request, 'tailor/payment_list.html', context)
 
 @require_POST
 def record_payment(request):
@@ -334,10 +334,3 @@ def record_payment(request):
             'error': f'An error occurred: {str(e)}'
         }, status=500) 
 
-def login(request):
-
-    return render(request, 'myapp/login.html')
-
-def register(request):
-
-    return render(request, 'myapp/register.html')
