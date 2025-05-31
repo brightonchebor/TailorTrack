@@ -21,4 +21,4 @@ def global_context(request):
         # 'site_name': 'TailorTrack',
         # 'user_notifications_count': get_user_notifications_count(request.user) if request.user.is_authenticated else 0,
     }
-    return context
+    return context 
