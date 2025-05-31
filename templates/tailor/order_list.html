@@ -60,7 +60,7 @@
             <div class="orders-grid">
                 {% if page_obj %}
                     {% for order in page_obj %}
-                        <div class="order-card {% if order.is_overdue %}overdue{% endif %}" onclick="viewOrderDetails({{ order.id }})">
+                        <div class="order-card {% if order.is_overdue %}overdue{% endif %}" ">
                             <div class="order-header">
                                 <div class="customer-name">{{ order.customer.name }}</div>
                                 <div class="order-status status-{{ order.status }}">{{ order.get_status_display }}</div>
