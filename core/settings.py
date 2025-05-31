@@ -1,12 +1,22 @@
 from pathlib import Path
 import os
+import environ
+
+env = environ.Env(
+    # Set casting, default value
+    DEBUG = (bool, False)
+)
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+environ.Env.read_env(BASE_DIR / '.env')
 
-SECRET_KEY = "django-insecure-m(l0l#tec-xvn$+jq@3^r)m0n5es6wrp6b+(h#pv-n%r7*a#)z"
 
-DEBUG = True
+
+
+SECRET_KEY = env('SECRET_KEY')
+
+DEBUG = env('DEBUG')
 
 ALLOWED_HOSTS = []
 
@@ -58,9 +68,9 @@ WSGI_APPLICATION = "core.wsgi.application"
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'tailordb',
+        'NAME': env('DB_NAME'),
         'USER': 'root',
-        'PASSWORD': 'sb62pu4142321',
+        'PASSWORD': env('DB_PASSWORD'),
         'HOST': '127.0.0.1',
         'PORT': '3306'
 
