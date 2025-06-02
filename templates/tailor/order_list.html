@@ -21,6 +21,8 @@
 
         <!-- Orders Grid -->
         
+            
+            {% if page_obj %}
             <!-- Filters -->
             <div class="filters">
                 <form method="GET" class="filters-row">
@@ -58,7 +60,6 @@
                 </form>
             </div>
             <div class="orders-grid">
-                {% if page_obj %}
                     {% for order in page_obj %}
                         <div class="order-card {% if order.is_overdue %}overdue{% endif %}" ">
                             <div class="order-header">
@@ -114,9 +115,16 @@
                             {% endif %}
                         </div>
                     {% endfor %}
-                {% endif %}
+                
             </div>
-    
+            {% else %}
+                <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
+                    <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📑</div>
+                        <h3>No orders yet</h3>
+                        <p>Orders will appear here once you create them.</p>
+                        <br/>
+                    </div>
+            {% endif %}
             
         <!-- Pagination -->
         {% if page_obj.has_other_pages %}
