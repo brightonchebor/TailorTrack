@@ -844,7 +844,3 @@ body {
     min-height: 100vh;
 }
 
-.main-content,
-.container:not(.footer .container) {
-    flex: 1;
-}
