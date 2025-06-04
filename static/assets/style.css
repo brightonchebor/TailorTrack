@@ -748,3 +748,103 @@ body {
         padding: 0 8px;
     }
 }
+
+/* Compact Footer Styles */
+.footer {
+    background: #22389b;
+    color: white;
+    padding: 1rem 0;
+    margin-top: auto;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.footer-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-logo {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: white;
+}
+
+.footer-copyright {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 0.85rem;
+}
+
+.footer-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-right a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s ease;
+}
+
+.footer-right a:hover {
+    color: white;
+}
+
+/* Responsive Footer */
+@media (max-width: 768px) {
+    .footer-content {
+        justify-content: center;
+        text-align: center;
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .footer-left {
+        flex-direction: column;
+        gap: 0.3rem;
+    }
+    
+    .footer-right {
+        gap: 1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .footer {
+        padding: 0.8rem 0;
+    }
+    
+    .footer-logo {
+        font-size: 1rem;
+    }
+    
+    .footer-copyright {
+        font-size: 0.8rem;
+    }
+    
+    .footer-right a {
+        font-size: 0.85rem;
+    }
+}
+
+/* Body layout adjustment to make footer stick to bottom */
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.main-content,
+.container:not(.footer .container) {
+    flex: 1;
+}
