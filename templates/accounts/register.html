@@ -35,20 +35,25 @@
 
     <br/><br/>
     <div class="container" style="max-width: 400px; margin: 0 auto;">
-      <ul>
-        {% for message in messages %} 
-        <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %};">
-          {{ message }}
-        </li>
-        {% endfor %}
-      </ul>
+      <!-- Display messages -->
+      {% if messages %}
+        <ul class="messages">
+          {% for message in messages %} 
+          <li style="color: {% if message.tags == 'error' %}red{% else %}green{% endif %}; list-style: none; padding: 10px; margin: 5px 0; border: 1px solid; border-radius: 4px; {% if message.tags == 'error' %}background-color: #ffebee; border-color: #f44336;{% else %}background-color: #e8f5e8; border-color: #4caf50;{% endif %}">
+            {{ message }}
+          </li>
+          {% endfor %}
+        </ul>
+      {% endif %}
+      
       <br/>
       <h2>Create Your Account</h2>
-      <form method="post" action="{% url 'register' %}">
+      <form method="post" action="{% url 'register' %}" id="registerForm">
         {% csrf_token %}
         <div class="form-group">
           <label for="username">Username</label>
-          <input type="text" id="username" name="username" placeholder="Enter your username" required>
+          <input type="text" id="username" name="username" placeholder="Enter your username" minlength="3" required>
+          <small style="color: #666; font-size: 12px;">Username must be at least 3 characters long (letters, numbers, and underscores only)</small>
         </div>
         <div class="form-group">
           <label for="email">Email</label>
@@ -56,20 +61,86 @@
         </div>
         <div class="form-group">
           <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="••••••••" required>
+          <input type="password" id="password" name="password" placeholder="••••••••" minlength="6" required>
+          <small style="color: #666; font-size: 12px;">Password must be at least 6 characters long</small>
         </div>
         <div class="form-group">
           <label for="confirm_password">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" required>
+          <input type="password" id="confirm_password" name="confirm_password" placeholder="••••••••" minlength="6" required>
+          <small style="color: #666; font-size: 12px;">Re-enter your password to confirm</small>
         </div>
         <button type="submit" class="btn btn-primary">Register</button>
       </form>
       <p>Already have an account? <a href="{% url 'login' %}">Login here</a></p>
     </div>
-    
 
     <script src="{% static '/assets/main.js' %}"></script>
     
+    <!-- Client-side validation script -->
+    <script>
+      document.getElementById('registerForm').addEventListener('submit', function(e) {
+        const username = document.getElementById('username').value.trim();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirm_password').value;
+        
+        // Validate username
+        if (!username) {
+          alert('Please enter a username');
+          e.preventDefault();
+          return false;
+        }
+        
+        if (username.length < 3) {
+          alert('Username must be at least 3 characters long');
+          e.preventDefault();
+          return false;
+        }
+        
+        // Check username contains only allowed characters
+        const usernameRegex = /^[a-zA-Z0-9_]+$/;
+        if (!usernameRegex.test(username)) {
+          alert('Username can only contain letters, numbers, and underscores');
+          e.preventDefault();
+          return false;
+        }
+        
+        // Validate email
+        if (!email) {
+          alert('Please enter your email');
+          e.preventDefault();
+          return false;
+        }
+        
+        // Validate password
+        if (password.length < 6) {
+          alert('Password must be at least 6 characters long');
+          e.preventDefault();
+          return false;
+        }
+        
+        // Check password match
+        if (password !== confirmPassword) {
+          alert('Passwords do not match');
+          e.preventDefault();
+          return false;
+        }
+      });
+      
+      // Real-time password match validation
+      document.getElementById('confirm_password').addEventListener('input', function() {
+        const password = document.getElementById('password').value;
+        const confirmPassword = this.value;
+        
+        if (confirmPassword && password !== confirmPassword) {
+          this.style.borderColor = 'red';
+          this.title = 'Passwords do not match';
+        } else {
+          this.style.borderColor = '';
+          this.title = '';
+        }
+      });
+    </script>
+    
   </body>
 </html>
-
