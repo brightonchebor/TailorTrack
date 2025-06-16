@@ -31,6 +31,8 @@ INSTALLED_APPS = [
 
     'accounts',
     'tailor',
+
+    'whitenoise.runserver_nostsatic'
 ]
 
 MIDDLEWARE = [
@@ -41,6 +43,7 @@ MIDDLEWARE = [
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "core.urls"
@@ -67,13 +70,20 @@ WSGI_APPLICATION = "core.wsgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': env('DB_NAME'),
-        'USER': 'root',
-        'PASSWORD': env('DB_PASSWORD'),
-        'HOST': '127.0.0.1',
-        'PORT': '3306'
-
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': env('DB_NAME'),
+        # 'USER': 'root',
+        # 'PASSWORD': env('DB_PASSWORD'),
+        # 'HOST': '127.0.0.1',
+        # 'PORT': '3306',
+        
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': env('PG_NAME'),
+        'USER': 'postgres',
+        'PASSWORD': env('PG_PWD'),
+        'HOST': 'trolley.proxy.rlwy.net',
+        'PORT': '43312'
+ 
     }
 }
 
