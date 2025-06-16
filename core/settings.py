@@ -18,7 +18,8 @@ SECRET_KEY = env('SECRET_KEY')
 
 DEBUG = env('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['tailortrack-production.up.railway.app', 'https://tailortrack-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['https://tailortrack-production.up.railway.app']
 
 
 INSTALLED_APPS = [
@@ -32,7 +33,7 @@ INSTALLED_APPS = [
     'accounts',
     'tailor',
 
-    'whitenoise.runserver_nostsatic'
+    'whitenoise.runserver_nostatic'
 ]
 
 MIDDLEWARE = [
@@ -121,6 +122,9 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
+
+# whitenoise
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
