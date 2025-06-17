@@ -29,7 +29,7 @@ Dashboard
             </div>
 
             <h2 style="margin-bottom: 20px;">Recent Orders</h2>
-            <div class="orders-grid">
+            <div class="orders-grid" >
                 {% for order in recent_orders %}
                 <div class="order-card" onclick="viewOrderDetails({{ order.id }})">
                     <div class="order-header">
@@ -66,13 +66,15 @@ Dashboard
                     </div>
                 </div>
                 <br/>
-                {% empty %}  
+                {% empty %}
+                    <br/><br/>  
                     <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
                         <div class="empty-state-icon" style="font-size: 48px; margin-bottom: 20px;">📑</div>
                         <h3>No orders yet</h3>
                         <p>Orders will appear here once you create them.</p>
                         <br/>
                     </div>
+                    
                 {% endfor %}
             </div>
         </div>
