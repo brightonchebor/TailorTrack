@@ -4,6 +4,7 @@ Dashboard
 {% endblock title %}
 
 {% block content %}
+{% if user.is_authenticated %} 
 <main class="main-content">
     <div class="container">
         <!-- Dashboard Tab -->
@@ -77,8 +78,12 @@ Dashboard
         </div>
     </div>
 </main>
+{% else %}
+    <div class="empty-state" style="text-align: center;  padding: 40px; color: #666;">
+        <div class="empty-state-icon" style="font-size: 70px; margin-bottom: 20px;">📈</div>
+        <h3>Ready to Manage Your Business?</h3>
+        <p>Please <a href="{% url 'login' %}">Sign in</a> to start creating orders, tracking customers, and growing your business.</p>
+    </div> 
+{% endif %}
 {% endblock content %}
 
-{% block modals %}
-<!-- Empty block - no modal here -->
-{% endblock modals %}
