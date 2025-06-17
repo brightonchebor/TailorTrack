@@ -10,15 +10,15 @@ Dashboard
         <div id="dashboard" class="tab-content active">
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-number" >{{ total_orders }}</div>
+                    <div class="stat-number" >{{ total_orders|floatformat:0|default:"0"  }}</div>
                     <div class="stat-label">Total Orders</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" >{{ active_orders }}</div>
+                    <div class="stat-number" >{{ active_orders|floatformat:0|default:"0" }}</div>
                     <div class="stat-label">Active Orders</div>
                 </div>
                 <div class="stat-card">
-                    <div class="stat-number" >{{ overdue_orders }}</div>
+                    <div class="stat-number" >{{ overdue_orders|floatformat:0|default:"0"  }}</div>
                     <div class="stat-label">Overdue Orders</div>
                 </div>
                 <div class="stat-card">
