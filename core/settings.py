@@ -16,7 +16,7 @@ environ.Env.read_env(BASE_DIR / '.env')
 
 SECRET_KEY = "+iqk8x6jy#@d-7-6(3x57@j*anw$zl_yrg)8wat$%#)cec_ntc"
 
-DEBUG = env('DEBUG')
+DEBUG = True
 
 ALLOWED_HOSTS = ['tailortrack-production.up.railway.app', 'https://tailortrack-production.up.railway.app', 'localhost', '127.0.0.0']
 CSRF_TRUSTED_ORIGINS = ['https://tailortrack-production.up.railway.app']
