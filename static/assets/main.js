@@ -668,32 +668,41 @@ if ("serviceWorker" in navigator) {
 
 
 
-// Mobile menu toggle functionality
-document.addEventListener('DOMContentLoaded', function() {
-    // Create mobile menu toggle button if it doesn't exist
-    const header = document.querySelector('.header-content');
-    let mobileToggle = document.querySelector('.mobile-menu-toggle');
-    
-    if (!mobileToggle) {
-        mobileToggle = document.createElement('button');
-        mobileToggle.className = 'mobile-menu-toggle';
-        mobileToggle.innerHTML = '☰';
-        mobileToggle.setAttribute('aria-label', 'Toggle mobile menu');
-        header.appendChild(mobileToggle);
+// Simple mobile menu toggle function
+function toggleMobileMenu() {
+    const mobileActions = document.getElementById('mobileActions');
+    if (mobileActions) {
+        mobileActions.classList.toggle('show');
     }
+}
+
+// Close mobile menu when clicking outside
+document.addEventListener('click', function(event) {
+    const mobileActions = document.getElementById('mobileActions');
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
+    const headerContent = document.querySelector('.header-content');
     
+    if (mobileActions && mobileToggle) {
+        // If clicking outside the header, close the menu
+        if (!headerContent.contains(event.target)) {
+            mobileActions.classList.remove('show');
+        }
+    }
+});
+
+// Alternative: If the above doesn't work, try this simpler version
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileToggle = document.querySelector('.mobile-menu-toggle');
     const mobileActions = document.querySelector('.mobile-actions');
     
     if (mobileToggle && mobileActions) {
-        mobileToggle.addEventListener('click', function() {
+        mobileToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
             mobileActions.classList.toggle('show');
+            console.log('Mobile menu toggled'); // For debugging
         });
-        
-        // Close mobile menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!header.contains(event.target)) {
-                mobileActions.classList.remove('show');
-            }
-        });
+    } else {
+        console.log('Mobile elements not found'); // For debugging
     }
 });

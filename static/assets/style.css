@@ -676,7 +676,37 @@ body {
     }
 }
 
-/* Replace your existing mobile CSS (around line 600+) with this: */
+/* Mobile menu toggle button */
+.mobile-menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0.5rem;
+}
+
+/* Mobile actions dropdown */
+.mobile-actions {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #14277c !important;
+    padding: 1rem;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    flex-direction: column;
+    gap: 1rem;
+    z-index: 999;
+}
+
+/* Show mobile actions when active */
+.mobile-actions.show {
+    display: flex !important;
+}
+
 
 /* Mobile phones */
 @media (max-width: 480px) {
