@@ -8,68 +8,88 @@
     <link href="{% static '/assets/style.css' %}" rel="stylesheet" />
   </head>
   <body>
-  <!-- Replace your entire header section with this: -->
+ 
       <header class="header">
-      <div class="container">
-        <div class="header-content">
-          <div class="logo">
-            <a href="{% url "dashboard" %}" style="text-decoration: none; color: inherit;">TailorTrack</a>
-          </div>
-          <div class="search-bar">
-            <form method="GET" action="{% url 'order_list' %}" style="display: flex; align-items: center; width: 100%; position: relative;">
-              <input
-                type="text"
-                id="searchInput"
-                name="search"
-                value="{{ search_query|default:'' }}"
-                placeholder="Search customers or orders..."
-                style="border: none; outline: none;  width: 100%; padding-right: 30px;"
-              />
-              <button type="submit" style="background: none; border: none; cursor: pointer; position: absolute; right: 0;">
-                <span class="search-icon">🔍</span>
-              </button>
-            </form>
-          </div>
-          
-          <div class="actions">
-            <button class="add-order-btn" onclick="openNewOrderModal()">
-              + New Order
-            </button> 
-            {% include './icon.html' %}
-          </div>
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <a href="#dashboard">TailorTrack</a>
+                </div>
+                
+                <!-- Desktop Search Bar -->
+                <div class="search-bar">
+                    <form method="GET" action="#order_list" style="display: flex; align-items: center; width: 100%; position: relative;">
+                        <input
+                            type="text"
+                            id="searchInput"
+                            name="search"
+                            placeholder="Search customers or orders..."
+                        />
+                        <button type="submit" style="background: none; border: none; cursor: pointer; position: absolute; right: 15px;">
+                            <span class="search-icon">🔍</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Desktop Actions -->
+                <div class="actions">
+                    <button class="add-order-btn" onclick="openNewOrderModal()">
+                        + New Order
+                    </button> 
+                    
+                    <!-- Desktop User Menu -->
+                    <div class="user-menu">
+                        <button id="userIcon" class="user-icon" aria-label="User menu">👤</button>
+                        <div id="userPopup" class="user-popup">
+                            <ul>
+                                <li><a href="#login">Login</a></li>
+                                <li><a href="#register">Register</a></li>
+                                <li><a href="#logout">Logout</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
 
-          <!-- Mobile menu toggle button -->
-          <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-            ☰
-          </button>
-        </div>
+                <!-- Mobile menu toggle button -->
+                <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                    ☰
+                </button>
+            </div>
 
-        <!-- Mobile actions dropdown - THIS IS CRUCIAL -->
-        <div class="mobile-actions" id="mobileActions">
-          <div class="search-bar">
-            <form method="GET" action="{% url 'order_list' %}" style="display: flex; align-items: center; width: 100%; position: relative;">
-              <input
-                type="text"
-                id="searchInputMobile"
-                name="search"
-                value="{{ search_query|default:'' }}"
-                placeholder="Search customers or orders..."
-                style="border: none; outline: none; width: 100%; padding-right: 30px;"
-              />
-              <button type="submit" style="background: none; border: none; cursor: pointer; position: absolute; right: 0;">
-                <span class="search-icon">🔍</span>
-              </button>
-            </form>
-          </div>
-          
-          <div class="actions">
-            <button class="add-order-btn" onclick="openNewOrderModal()">
-              + New Order
-            </button> 
-            {% include './icon.html' %}
-          </div>
+            <!-- Mobile actions dropdown -->
+            <div class="mobile-actions" id="mobileActions">
+                <!-- Mobile Search Bar -->
+                <div class="search-bar">
+                    <form method="GET" action="#order_list" style="display: flex; align-items: center; width: 100%; position: relative;">
+                        <input
+                            type="text"
+                            id="searchInputMobile"
+                            name="search"
+                            placeholder="Search customers or orders..."
+                        />
+                        <button type="submit" style="background: none; border: none; cursor: pointer; position: absolute; right: 15px;">
+                            <span class="search-icon">🔍</span>
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Mobile Actions -->
+                <div class="actions">
+                    <button class="add-order-btn" onclick="openNewOrderModal()">
+                        + New Order
+                    </button>
+                </div>
+                
+                <!-- Mobile User Menu (Static Display) -->
+                <div class="user-popup">
+                    <ul>
+                        <li><a href="#login">Login</a></li>
+                        <li><a href="#register">Register</a></li>
+                        <li><a href="#logout">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
         </div>
-      </div>
     </header>
 
 
