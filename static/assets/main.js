@@ -665,3 +665,35 @@ if ("serviceWorker" in navigator) {
     console.log("Service Worker support detected");
   });
 }
+
+
+
+// Mobile menu toggle functionality
+document.addEventListener('DOMContentLoaded', function() {
+    // Create mobile menu toggle button if it doesn't exist
+    const header = document.querySelector('.header-content');
+    let mobileToggle = document.querySelector('.mobile-menu-toggle');
+    
+    if (!mobileToggle) {
+        mobileToggle = document.createElement('button');
+        mobileToggle.className = 'mobile-menu-toggle';
+        mobileToggle.innerHTML = '☰';
+        mobileToggle.setAttribute('aria-label', 'Toggle mobile menu');
+        header.appendChild(mobileToggle);
+    }
+    
+    const mobileActions = document.querySelector('.mobile-actions');
+    
+    if (mobileToggle && mobileActions) {
+        mobileToggle.addEventListener('click', function() {
+            mobileActions.classList.toggle('show');
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!header.contains(event.target)) {
+                mobileActions.classList.remove('show');
+            }
+        });
+    }
+});

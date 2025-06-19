@@ -676,6 +676,8 @@ body {
     }
 }
 
+/* Replace your existing mobile CSS (around line 600+) with this: */
+
 /* Mobile phones */
 @media (max-width: 480px) {
     .header {
@@ -694,10 +696,12 @@ body {
         flex-shrink: 0;
     }
     
+    /* Hide search bar in header, show in mobile menu */
     .search-bar {
-        display: none; /* Hide search on very small screens */
+        display: none;
     }
     
+    /* Hide desktop actions, show in mobile menu */
     .actions {
         display: none;
     }
@@ -707,20 +711,45 @@ body {
         flex-shrink: 0;
     }
     
-    /* Mobile actions dropdown */
+    /* Mobile actions dropdown - UPDATED */
     .mobile-actions {
         padding: 1rem;
+        gap: 1rem;
     }
     
+    /* Show search in mobile menu */
     .mobile-actions .search-bar {
         display: block;
-        margin-bottom: 1rem;
         max-width: none;
+        flex: none;
     }
     
     .mobile-actions .search-bar input {
         padding: 10px 35px 10px 15px;
         font-size: 14px;
+    }
+    
+    /* Show actions in mobile menu */
+    .mobile-actions .actions {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+        gap: 1rem;
+    }
+    
+    /* Ensure mobile add-order button is visible */
+    .mobile-actions .add-order-btn {
+        display: block;
+        flex: 1;
+        text-align: center;
+        white-space: nowrap;
+    }
+    
+    /* Ensure user icon is visible in mobile menu */
+    .mobile-actions .user-menu {
+        display: block;
+        flex-shrink: 0;
     }
     
     /* Other mobile adjustments */
@@ -732,7 +761,6 @@ body {
         padding: 0 10px;
     }
 }
-
 /* Very small screens */
 @media (max-width: 360px) {
     .logo {
