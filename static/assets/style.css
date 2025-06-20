@@ -902,3 +902,12 @@ body {
     min-height: 100vh;
 }
 
+@media (max-width: 480px) {
+  .search-bar,
+  .actions {
+    display: flex !important;
+  }
+  .mobile-menu-toggle {
+    display: none !important;
+  }
+}
