@@ -140,8 +140,8 @@
     background-color: #fefefe;
     border-radius: 8px;
     width: 90%;
-    max-width: 600px;
-    max-height: 80vh;
+    max-width: 800px;
+    max-height: 90vh;
     overflow-y: auto;
     box-shadow: 0 4px 20px rgba(0,0,0,0.3);
 }
@@ -152,6 +152,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: #f8f9fa;
+    border-radius: 8px 8px 0 0;
 }
 
 .modal-body {
@@ -164,6 +166,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
+    background: #f8f9fa;
+    border-radius: 0 0 8px 8px;
 }
 
 .close {
@@ -184,27 +188,28 @@
 }
 
 .customer-detail-section {
-    margin-bottom: 20px;
+    margin-bottom: 25px;
 }
 
 .customer-detail-section h4 {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
     color: #333;
-    border-bottom: 1px solid #eee;
-    padding-bottom: 5px;
+    border-bottom: 2px solid #667eea;
+    padding-bottom: 8px;
+    font-size: 18px;
 }
 
 .detail-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 10px;
+    gap: 15px;
     margin-bottom: 15px;
 }
 
 .detail-item {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
+    padding: 10px 0;
     border-bottom: 1px solid #f5f5f5;
 }
 
@@ -215,19 +220,152 @@
 
 .detail-value {
     color: #333;
+    font-weight: 500;
 }
 
 .orders-list {
-    max-height: 200px;
+    max-height: 500px;
     overflow-y: auto;
 }
 
 .order-item {
-    padding: 10px;
+    padding: 20px;
     border: 1px solid #eee;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    background: #fafafa;
+    transition: all 0.2s ease;
+}
+
+.order-item:hover {
+    background: #f0f0f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Order Status Styles */
+.order-status {
+    padding: 4px 12px;
+    border-radius: 15px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.status-pending {
+    background: #fff3cd;
+    color: #856404;
+}
+
+.status-progress {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.status-completed {
+    background: #d4edda;
+    color: #155724;
+}
+
+.status-delivered {
+    background: #e2e3e5;
+    color: #383d41;
+}
+
+/* Design Images Grid */
+.design-images-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.design-image-item img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
     border-radius: 4px;
-    margin-bottom: 10px;
-    background: #f9f9f9;
+    cursor: pointer;
+    border: 2px solid #ddd;
+    transition: transform 0.2s ease;
+}
+
+.design-image-item img:hover {
+    transform: scale(1.05);
+    border-color: #667eea;
+}
+
+/* Measurements Display */
+.measurements-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+    padding: 10px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
+
+.measurement-item {
+    text-align: center;
+    padding: 8px;
+    background: white;
+    border-radius: 4px;
+    border: 1px solid #e9ecef;
+}
+
+.measurement-label {
+    font-weight: bold;
+    color: #495057;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.measurement-value {
+    font-size: 16px;
+    color: #333;
+    margin-top: 4px;
+}
+
+/* Button Styles */
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    text-align: center;
+    transition: all 0.2s ease;
+}
+
+.btn-primary {
+    background: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #5a6fd8;
+}
+
+.btn-secondary {
+    background: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: #5a6268;
+}
+
+.btn-danger {
+    background: #dc3545;
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #c82333;
 }
 
 /* Responsive Design */
@@ -246,6 +384,24 @@
     
     .detail-grid {
         grid-template-columns: 1fr;
+    }
+    
+    .modal-content {
+        width: 95%;
+        max-width: none;
+    }
+    
+    .measurements-grid {
+        grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    }
+    
+    .design-images-grid {
+        grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    }
+    
+    .design-image-item img {
+        width: 60px;
+        height: 60px;
     }
 }
 </style>
@@ -321,27 +477,122 @@ function displayCustomerDetails(customer) {
     
     modalName.textContent = customer.name;
     
-    const ordersHtml = customer.orders.map(order => `
-        <div class="order-item">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <strong>Order #${order.id}</strong> - ${order.status}
-                    <br><small>Created: ${order.created_at}</small>
+    const ordersHtml = customer.orders.map(order => {
+        // Create design images HTML
+        let designImagesHtml = '';
+        if (order.design_images && order.design_images.length > 0) {
+            designImagesHtml = `
+                <div style="margin-top: 15px;">
+                    <strong style="color: #495057;">Design Images:</strong>
+                    <div class="design-images-grid">
+                        ${order.design_images.map(image => `
+                            <div class="design-image-item">
+                                <img src="${image.url}" alt="Design Image" 
+                                     onclick="showImageModal('${image.url}')"
+                                     title="Click to view full size">
+                            </div>
+                        `).join('')}
+                    </div>
                 </div>
-                <div style="text-align: right;">
-                    <div>Total: KES ${order.total_amount}</div>
-                    <div>Paid: KES ${order.paid_amount}</div>
-                    <div style="color: ${order.balance_amount > 0 ? '#dc3545' : '#28a745'};">
-                        Balance: KES ${order.balance_amount}
+            `;
+        }
+        
+        // Create measurements HTML
+        let measurementsHtml = '';
+        if (order.measurements) {
+            const measurements = order.measurements;
+            const measurementItems = [];
+            
+            if (measurements.bust) measurementItems.push({label: 'Bust/Chest', value: measurements.bust + '"'});
+            if (measurements.waist) measurementItems.push({label: 'Waist', value: measurements.waist + '"'});
+            if (measurements.hips) measurementItems.push({label: 'Hips', value: measurements.hips + '"'});
+            if (measurements.length) measurementItems.push({label: 'Length', value: measurements.length + '"'});
+            
+            if (measurementItems.length > 0) {
+                measurementsHtml = `
+                    <div style="margin-top: 15px;">
+                        <strong style="color: #495057;">Measurements:</strong>
+                        <div class="measurements-grid">
+                            ${measurementItems.map(item => `
+                                <div class="measurement-item">
+                                    <div class="measurement-label">${item.label}</div>
+                                    <div class="measurement-value">${item.value}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                        ${measurements.notes ? `<div style="margin-top: 10px; padding: 10px; background: #e9ecef; border-radius: 4px; font-size: 14px;"><strong>Notes:</strong> ${measurements.notes}</div>` : ''}
+                    </div>
+                `;
+            }
+        }
+        
+        // Create design notes HTML
+        let designNotesHtml = '';
+        if (order.design_notes) {
+            designNotesHtml = `
+                <div style="margin-top: 15px;">
+                    <strong style="color: #495057;">Design Notes:</strong>
+                    <div style="margin-top: 8px; padding: 10px; background: #fff3cd; border-radius: 4px; font-size: 14px; border-left: 4px solid #ffc107;">
+                        ${order.design_notes}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Create due date HTML
+        let dueDateHtml = '';
+        if (order.due_date) {
+            const dueDate = new Date(order.due_date);
+            const today = new Date();
+            const isOverdue = dueDate < today && order.status !== 'delivered';
+            
+            dueDateHtml = `
+                <div style="margin-top: 8px;">
+                    <small style="color: ${isOverdue ? '#dc3545' : '#666'}; font-weight: ${isOverdue ? 'bold' : 'normal'};">
+                        📅 Due: ${order.due_date}${isOverdue ? ' (⚠️ Overdue)' : ''}
+                    </small>
+                </div>
+            `;
+        }
+        
+        return `
+            <div class="order-item" style="border-left: 4px solid ${getStatusColor(order.status)};">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+                            <strong style="font-size: 16px; color: #333;">Order #${order.id}</strong>
+                            <span class="order-status status-${order.status}">
+                                ${order.status}
+                            </span>
+                        </div>
+                        <div style="font-size: 14px; color: #666; margin-bottom: 5px;">
+                            📅 Created: ${order.created_at}
+                        </div>
+                        ${dueDateHtml}
+                        ${order.description ? `<div style="margin-top: 8px; font-size: 14px; color: #666;"><em>"${order.description}"</em></div>` : ''}
+                        ${measurementsHtml}
+                        ${designNotesHtml}
+                        ${designImagesHtml}
+                    </div>
+                    <div style="text-align: right; margin-left: 20px; min-width: 140px; background: #f8f9fa; padding: 15px; border-radius: 6px;">
+                        <div style="font-weight: bold; font-size: 16px; color: #333; margin-bottom: 5px;">
+                            💰 Total: KES ${order.total_amount}
+                        </div>
+                        <div style="color: #28a745; font-weight: 500; margin-bottom: 5px;">
+                            ✅ Paid: KES ${order.paid_amount}
+                        </div>
+                        <div style="color: ${order.balance_amount > 0 ? '#dc3545' : '#28a745'}; font-weight: bold; font-size: 14px;">
+                            ${order.balance_amount > 0 ? '⚠️' : '✅'} Balance: KES ${order.balance_amount}
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    `).join('');
+        `;
+    }).join('');
     
     modalBody.innerHTML = `
         <div class="customer-detail-section">
-            <h4>Contact Information</h4>
+            <h4>📞 Contact Information</h4>
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="detail-label">Phone:</span>
@@ -361,7 +612,7 @@ function displayCustomerDetails(customer) {
         </div>
         
         <div class="customer-detail-section">
-            <h4>Order Summary</h4>
+            <h4>📊 Order Summary</h4>
             <div class="detail-grid">
                 <div class="detail-item">
                     <span class="detail-label">Total Orders:</span>
@@ -379,12 +630,23 @@ function displayCustomerDetails(customer) {
         </div>
         
         <div class="customer-detail-section">
-            <h4>Recent Orders</h4>
+            <h4>📋 Order History</h4>
             <div class="orders-list">
-                ${customer.orders.length > 0 ? ordersHtml : '<p>No orders yet</p>'}
+                ${customer.orders.length > 0 ? ordersHtml : '<p style="text-align: center; color: #666; padding: 20px;">No orders yet</p>'}
             </div>
         </div>
     `;
+}
+
+// Helper function to get status color
+function getStatusColor(status) {
+    switch (status) {
+        case 'pending': return '#ffc107';
+        case 'progress': return '#17a2b8';
+        case 'completed': return '#28a745';
+        case 'delivered': return '#6c757d';
+        default: return '#6c757d';
+    }
 }
 
 function closeCustomerModal() {
@@ -435,6 +697,39 @@ function deleteCustomer() {
     });
 }
 
+// Function to show image in a modal
+function showImageModal(imageUrl) {
+    // Create image modal if it doesn't exist
+    let imageModal = document.getElementById('imageModal');
+    if (!imageModal) {
+        imageModal = document.createElement('div');
+        imageModal.id = 'imageModal';
+        imageModal.className = 'modal';
+        imageModal.style.display = 'none';
+        imageModal.innerHTML = `
+            <div class="modal-content" style="max-width: 90%; max-height: 90%; padding: 0; background: transparent; box-shadow: none;">
+                <div style="position: relative; text-align: center;">
+                    <span class="close" onclick="closeImageModal()" style="position: absolute; top: -40px; right: 0; color: white; font-size: 30px; z-index: 1001; background: rgba(0,0,0,0.5); padding: 5px 10px; border-radius: 4px;">&times;</span>
+                    <img id="modalImage" src="" alt="Design Image" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.3);">
+                </div>
+            </div>
+        `;
+        document.body.appendChild(imageModal);
+    }
+    
+    // Set the image source and show modal
+    document.getElementById('modalImage').src = imageUrl;
+    imageModal.style.display = 'flex';
+}
+
+// Function to close image modal
+function closeImageModal() {
+    const imageModal = document.getElementById('imageModal');
+    if (imageModal) {
+        imageModal.style.display = 'none';
+    }
+}
+
 // Helper function to get CSRF token
 function getCookie(name) {
     let cookieValue = null;
@@ -455,147 +750,6 @@ function getCookie(name) {
 window.onclick = function(event) {
     const customerModal = document.getElementById('customerModal');
     const deleteModal = document.getElementById('deleteConfirmModal');
-    
-    if (event.target === customerModal) {
-        closeCustomerModal();
-    }
-    if (event.target === deleteModal) {
-        closeDeleteConfirmModal();
-    }
-}
-function displayCustomerDetails(customer) {
-    const modalName = document.getElementById('customerModalName');
-    const modalBody = document.getElementById('customerModalBody');
-    
-    modalName.textContent = customer.name;
-    
-    const ordersHtml = customer.orders.map(order => {
-        // Create design images HTML
-        let designImagesHtml = '';
-        if (order.design_images && order.design_images.length > 0) {
-            designImagesHtml = `
-                <div style="margin-top: 10px;">
-                    <strong>Design Images:</strong>
-                    <div class="design-images-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); gap: 8px; margin-top: 8px;">
-                        ${order.design_images.map(image => `
-                            <div class="design-image-item">
-                                <img src="${image.url}" alt="Design Image" 
-                                     style="width: 80px; height: 80px; object-fit: cover; border-radius: 4px; cursor: pointer; border: 2px solid #ddd;" 
-                                     onclick="showImageModal('${image.url}')"
-                                     title="Click to view full size">
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-        
-        return `
-            <div class="order-item">
-                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
-                    <div style="flex: 1;">
-                        <strong>Order #${order.id}</strong> - ${order.status}
-                        <br><small>Created: ${order.created_at}</small>
-                        ${order.description ? `<br><small><em>${order.description}</em></small>` : ''}
-                        ${designImagesHtml}
-                    </div>
-                    <div style="text-align: right; margin-left: 15px;">
-                        <div>Total: KES ${order.total_amount}</div>
-                        <div>Paid: KES ${order.paid_amount}</div>
-                        <div style="color: ${order.balance_amount > 0 ? '#dc3545' : '#28a745'};">
-                            Balance: KES ${order.balance_amount}
-                        </div>
-                    </div>
-                </div>
-            </div>
-        `;
-    }).join('');
-    
-    modalBody.innerHTML = `
-        <div class="customer-detail-section">
-            <h4>Contact Information</h4>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="detail-label">Phone:</span>
-                    <span class="detail-value">${customer.phone_number}</span>
-                </div>
-                ${customer.whatsapp_number ? `
-                <div class="detail-item">
-                    <span class="detail-label">WhatsApp:</span>
-                    <span class="detail-value">${customer.whatsapp_number}</span>
-                </div>
-                ` : ''}
-                <div class="detail-item">
-                    <span class="detail-label">Joined:</span>
-                    <span class="detail-value">${customer.created_at}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="customer-detail-section">
-            <h4>Order Summary</h4>
-            <div class="detail-grid">
-                <div class="detail-item">
-                    <span class="detail-label">Total Orders:</span>
-                    <span class="detail-value">${customer.total_orders}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Total Spent:</span>
-                    <span class="detail-value">KES ${customer.total_spent}</span>
-                </div>
-                <div class="detail-item">
-                    <span class="detail-label">Outstanding Balance:</span>
-                    <span class="detail-value" style="color: ${customer.total_balance > 0 ? '#dc3545' : '#28a745'};">KES ${customer.total_balance}</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="customer-detail-section">
-            <h4>Recent Orders</h4>
-            <div class="orders-list">
-                ${customer.orders.length > 0 ? ordersHtml : '<p>No orders yet</p>'}
-            </div>
-        </div>
-    `;
-}
-
-// Function to show image in a modal
-function showImageModal(imageUrl) {
-    // Create image modal if it doesn't exist
-    let imageModal = document.getElementById('imageModal');
-    if (!imageModal) {
-        imageModal = document.createElement('div');
-        imageModal.id = 'imageModal';
-        imageModal.className = 'modal';
-        imageModal.style.display = 'none';
-        imageModal.innerHTML = `
-            <div class="modal-content" style="max-width: 90%; max-height: 90%; padding: 0; background: transparent; box-shadow: none;">
-                <div style="position: relative; text-align: center;">
-                    <span class="close" onclick="closeImageModal()" style="position: absolute; top: -40px; right: 0; color: white; font-size: 30px; z-index: 1001;">&times;</span>
-                    <img id="modalImage" src="" alt="Design Image" style="max-width: 100%; max-height: 80vh; object-fit: contain; border-radius: 8px;">
-                </div>
-            </div>
-        `;
-        document.body.appendChild(imageModal);
-    }
-    
-    // Set the image source and show modal
-    document.getElementById('modalImage').src = imageUrl;
-    imageModal.style.display = 'flex';
-}
-
-// Function to close image modal
-function closeImageModal() {
-    const imageModal = document.getElementById('imageModal');
-    if (imageModal) {
-        imageModal.style.display = 'none';
-    }
-}
-
-// Update the window click handler to include image modal
-window.onclick = function(event) {
-    const customerModal = document.getElementById('customerModal');
-    const deleteModal = document.getElementById('deleteConfirmModal');
     const imageModal = document.getElementById('imageModal');
     
     if (event.target === customerModal) {
@@ -611,7 +765,7 @@ window.onclick = function(event) {
 </script>
 
 {% else %}
-    <div class="empty-state" style="text-align: center;  padding: 40px; color: #666;">
+    <div class="empty-state" style="text-align: center; padding: 40px; color: #666;">
         <div class="empty-state-icon" style="font-size: 70px; margin-bottom: 20px;">📈</div>
         <h3>Ready to Manage Your Business?</h3>
         <p>Please <a href="{% url 'login' %}">Sign in</a> to start creating orders, tracking customers, and growing your business.</p>

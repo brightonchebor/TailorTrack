@@ -126,14 +126,15 @@ def customer_details(request, customer_id):
     """Get detailed customer information as JSON - ensure customer belongs to current user"""
     customer = get_object_or_404(Customer, id=customer_id, user=request.user)
 
-    # Get customer's orders with design images
+    # Get customer's last 10 orders with design images
     orders = (
-        customer.orders.prefetch_related("design_images")
+        customer.orders
+        .prefetch_related('design_images')
         .all()
-        .order_by("-created_at")[:10]
-    )  # Last 10 orders
+        .order_by('-created_at')[:10]
+    )
 
-    # Calculate totals using the correct field names
+    # Calculate totals
     total_spent = sum(float(order.amount_paid) for order in customer.orders.all())
     total_balance = sum(
         float(order.total_cost - order.amount_paid) for order in customer.orders.all()
@@ -141,16 +142,24 @@ def customer_details(request, customer_id):
 
     orders_data = []
     for order in orders:
-        # Get design images for this order
-        design_images = []
-        for image in order.design_images.all():
-            design_images.append(
-                {
-                    "id": image.id,
-                    "url": image.image.url,
-                    "uploaded_at": image.uploaded_at.strftime("%d-%b-%Y"),
-                }
-            )
+        # Design images
+        design_images = [
+            {
+                "id": image.id,
+                "url": image.image.url,
+                "uploaded_at": image.uploaded_at.strftime("%d-%b-%Y"),
+            }
+            for image in order.design_images.all()
+        ]
+
+        # Measurements directly on Order
+        measurements = {
+            'bust': order.bust,
+            'waist': order.waist,
+            'hips': order.hips,
+            'length': order.length,
+            'notes': order.measurement_notes or '',
+        }
 
         orders_data.append(
             {
@@ -160,15 +169,14 @@ def customer_details(request, customer_id):
                 "due_date": (
                     order.due_date.strftime("%d-%b-%Y") if order.due_date else ""
                 ),
-                "total_amount": float(order.total_cost),  # Using total_cost from model
-                "paid_amount": float(order.amount_paid),  # Using amount_paid from model
+                "total_amount": float(order.total_cost),
+                "paid_amount": float(order.amount_paid),
                 "balance_amount": float(
                     order.total_cost - order.amount_paid
-                ),  # Calculated balance
-                "description": getattr(
-                    order, "design_notes", ""
-                ),  # Using design_notes as description
-                "design_images": design_images,  # Add design images
+                ),
+                "description": order.design_notes or "",
+                "design_images": design_images,
+                "measurements": measurements,
             }
         )
 
@@ -185,6 +193,7 @@ def customer_details(request, customer_id):
     }
 
     return JsonResponse(customer_data)
+
 
 
 @require_POST
